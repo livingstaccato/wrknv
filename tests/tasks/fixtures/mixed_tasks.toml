@@ -1,0 +1,17 @@
+# Mixed simple and complex tasks for testing
+
+[tasks]
+# Simple string tasks
+echo-test = "echo 'test output'"
+fail-command = "exit 1"
+slow-command = "sleep 0.1 && echo 'done'"
+
+# Complex tasks
+[tasks.with-env]
+run = "env | grep TEST_VAR"
+description = "Task with environment variable"
+env = { TEST_VAR = "test_value" }
+
+[tasks.composite]
+run = ["echo-test", "slow-command"]
+description = "Composite task running multiple tasks"

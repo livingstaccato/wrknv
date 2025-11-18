@@ -1,0 +1,62 @@
+# Nested Tasks Example
+# ====================
+# This example demonstrates hierarchical task organization with nested namespaces.
+
+project_name = "nested-tasks-example"
+version = "1.0.0"
+
+# Flat tasks for common operations
+[tasks]
+lint = "ruff check src/"
+format = "ruff format src/"
+typecheck = "mypy src/"
+
+# Nested test tasks (2 levels)
+[tasks.test]
+_default = "pytest tests/"
+unit = "pytest tests/unit/"
+integration = "pytest tests/integration/"
+e2e = "pytest tests/e2e/"
+
+# Nested test.unit tasks (3 levels)
+[tasks.test.unit]
+fast = "pytest tests/unit/ -x"
+watch = "pytest-watch tests/unit/"
+
+[tasks.test.unit.coverage]
+run = "pytest tests/unit/ --cov=src --cov-report=html"
+description = "Unit tests with coverage report"
+timeout = 300.0
+
+# Documentation tasks
+[tasks.docs]
+_default = "mkdocs serve"
+build = "mkdocs build"
+deploy = "mkdocs gh-deploy"
+
+# Build tasks
+[tasks.build]
+_default = "python -m build"
+wheel = "python -m build --wheel"
+sdist = "python -m build --sdist"
+docker = "docker build -t myapp ."
+
+# Deploy tasks
+[tasks.deploy]
+staging = "bash scripts/deploy.sh staging"
+production = "bash scripts/deploy.sh production"
+
+[tasks.deploy.staging]
+run = "bash scripts/deploy.sh staging"
+description = "Deploy to staging environment"
+timeout = 1800.0
+env = { ENV = "staging", REGION = "us-west-2" }
+
+# Composite tasks
+[tasks.quality]
+run = ["lint", "typecheck", "format"]
+description = "Run all quality checks"
+
+[tasks.ci]
+run = ["quality", "test.unit", "test.integration", "build"]
+description = "Complete CI pipeline"

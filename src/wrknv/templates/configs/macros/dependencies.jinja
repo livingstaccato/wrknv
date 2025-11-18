@@ -1,0 +1,68 @@
+{#
+Jinja2 macros for handling dependencies in pyproject.toml templates
+#}
+
+{%- macro format_dependency_list(deps, indent=0) -%}
+{%- set prefix = "    " * indent -%}
+{%- if deps -%}
+[
+{%- for dep in deps %}
+{{ prefix }}    "{{ dep }}",
+{%- endfor %}
+{{ prefix }}]
+{%- else -%}
+[]
+{%- endif -%}
+{%- endmacro -%}
+
+{%- macro format_dependency_groups(groups, indent=0) -%}
+{%- set prefix = "    " * indent -%}
+{%- for group_name, deps in groups.items() %}
+{{ prefix }}{{ group_name }} = {{ format_dependency_list(deps, indent) }}
+{%- endfor -%}
+{%- endmacro -%}
+
+{%- macro format_optional_dependencies(optional_deps, indent=0) -%}
+{%- set prefix = "    " * indent -%}
+{%- for group_name, deps in optional_deps.items() %}
+{{ prefix }}{{ group_name }} = {{ format_dependency_list(deps, indent) }}
+{%- endfor -%}
+{%- endmacro -%}
+
+{%- macro provide_ecosystem_deps(package_type, extras=None) -%}
+{%- if package_type == "foundation-based" -%}
+"provide-foundation[all]>=0.1.0",
+{%- elif package_type == "pyvider-plugin" -%}
+"pyvider>=0.0.112",
+"pyvider-cty>=0.0.113",
+"pyvider-rpcplugin>=0.0.112",
+{%- elif package_type == "testkit-extension" -%}
+"provide-testkit[all]",
+{%- endif -%}
+{%- if extras -%}
+{%- for extra in extras -%}
+"{{ extra }}",
+{%- endfor -%}
+{%- endif -%}
+{%- endmacro -%}
+
+{%- macro workspace_sources(sources, indent=0) -%}
+{%- set prefix = "    " * indent -%}
+{%- for source_name, config in sources.items() %}
+{{ prefix }}{{ source_name }} = { workspace = {{ config.workspace | default('true') | lower }} }
+{%- endfor -%}
+{%- endmacro -%}
+
+{%- macro format_classifiers(classifiers, python_versions=None, indent=0) -%}
+{%- set prefix = "    " * indent -%}
+[
+{%- for classifier in classifiers %}
+{{ prefix }}    "{{ classifier }}",
+{%- endfor -%}
+{%- if python_versions %}
+{%- for version in python_versions %}
+{{ prefix }}    "Programming Language :: Python :: {{ version }}",
+{%- endfor -%}
+{%- endif %}
+{{ prefix }}]
+{%- endmacro -%}

@@ -1,0 +1,67 @@
+# Inherit shared configuration from provide-foundry
+INHERIT: .provide/foundry/base-mkdocs.yml
+
+# Project-Specific Configuration
+site_name: wrknv
+site_description: Work environment management and toolchain automation
+site_author: provide.io
+site_url: https://foundry.provide.io/wrknv/
+repo_url: https://github.com/provide-io/wrknv
+repo_name: provide-io/wrknv
+edit_uri: edit/main/docs/
+copyright: ©2024-2025 provide.io llc<br/>🛠️ with 💚 and 🦝 on 🌎
+
+# Development server configuration
+dev_addr: '127.0.0.1:11008'
+
+# Standalone mode settings
+docs_dir: docs
+
+# Project-specific theme overrides
+theme:
+  font:
+    text: Inter
+    code: Fira Code
+  palette:
+    # Light mode - custom colors for wrknv
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: black
+      accent: deep purple
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Dark mode - custom colors for wrknv
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: deep purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+# Project-specific plugins (in addition to base plugins)
+plugins:
+  - gen-files:
+      scripts:
+        - .provide/foundry/gen_ref_pages.py
+  - literate-nav:
+      nav_file: SUMMARY.md
+
+nav:
+  - Home: index.md
+
+  - Getting Started:
+    - getting-started/index.md
+    - Installation: getting-started/installation.md
+    - Concepts: getting-started/concepts.md
+    - Quick Start: getting-started/quick-start.md
+
+  - Features:
+    - Task System: features/task-system.md
+    - Task Runner: features/task-runner.md
+    - CLI Reference: features/we-cli-reference.md
+
+  - Configuration Reference: reference/configuration.md
+
+  - API Reference: api/

@@ -1,0 +1,7 @@
+# Simple task definitions for testing
+
+[tasks]
+test = "uv run pytest tests/"
+lint = "uv run ruff check src/"
+format = "uv run ruff format src/"
+hello = "echo 'Hello from wrknv!'"

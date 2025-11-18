@@ -1,0 +1,31 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
+# Three-level nested task fixture with _default tasks
+
+[tasks]
+format = "ruff format src/"
+
+# Three-level nesting with _default
+# Note: In TOML, you can't have both [tasks.test] with key-value pairs
+# AND [tasks.test.unit] as a table. They must be consistent.
+
+[tasks.test.unit]
+_default = "pytest tests/unit/ -v"
+fast = "pytest tests/unit/ -x --ff"
+coverage = "pytest tests/unit/ --cov=src"
+verbose = "pytest tests/unit/ -vv"
+
+[tasks.test.integration]
+_default = "pytest tests/integration/ -v"
+slow = "pytest tests/integration/ -m slow"
+
+[tasks.docs]
+_default = "mkdocs serve"
+
+[tasks.docs.build]
+_default = "mkdocs build"
+strict = "mkdocs build --strict"
+clean = "rm -rf site/ && mkdocs build"

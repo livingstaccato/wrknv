@@ -1,0 +1,69 @@
+# Centralized workflow configuration
+# This file contains shared configuration for all workflows
+
+defaults:
+  python_version: "3.11"
+  uv_version: "0.4.0"
+  node_version: "20"
+  go_version: "1.22"
+
+test_matrix:
+  os:
+    - ubuntu-latest
+    - macos-latest
+    - windows-latest
+  python:
+    - "3.9"
+    - "3.10"
+    - "3.11"
+    - "3.12"
+    - "3.13"
+
+tools:
+  terraform:
+    latest: "1.9.0"
+    versions:
+      - "1.5.7"
+      - "1.6.6"
+      - "1.7.5"
+      - "1.8.5"
+      - "1.9.0"
+  tofu:
+    latest: "1.8.1"
+    versions:
+      - "1.6.2"
+      - "1.7.3"
+      - "1.8.0"
+      - "1.8.1"
+
+security:
+  bandit:
+    exclude_dirs:
+      - tests
+      - docs
+      - scripts
+  codeql:
+    languages:
+      - python
+    queries:
+      - security-extended
+      - security-and-quality
+  
+release:
+  pypi:
+    repository: pypi
+    test_repository: testpypi
+  github:
+    draft: false
+    prerelease_patterns:
+      - rc
+      - beta
+      - alpha
+      - dev
+
+notifications:
+  slack:
+    enabled: false
+    webhook_secret: SLACK_WEBHOOK_URL
+  email:
+    enabled: false

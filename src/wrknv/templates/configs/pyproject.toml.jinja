@@ -1,0 +1,230 @@
+#
+# {{ project_name }}/pyproject.toml
+#
+
+[project]
+name = "{{ project_name }}"
+description = "{{ description | default('Description for ' + project_name) }}"
+dynamic = ["version"]
+requires-python = ">={{ python_version | default('3.11') }}"
+readme = "README.md"
+license = { text = "{{ license | default('Apache-2.0') }}" }
+authors = [
+{% for author in authors | default([{"name": "Tim Perkins", "email": "code@tim.life"}]) %}
+    { name = "{{ author.name }}", email = "{{ author.email }}" },
+{% endfor %}
+]
+maintainers = [
+{% for maintainer in maintainers | default([{"name": "provide.io", "email": "code@provide.io"}]) %}
+    { name = "{{ maintainer.name }}", email = "{{ maintainer.email }}" },
+{% endfor %}
+]
+{% if keywords %}
+keywords = {{ format_dependencies(keywords) }}
+{% endif %}
+classifiers = [
+    "Development Status :: {{ development_status | default('3 - Alpha') }}",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+{% for py_version in python_versions | default(['3.11', '3.12', '3.13', '3.14']) %}
+    "Programming Language :: Python :: {{ py_version }}",
+{% endfor %}
+    "Typing :: Typed",
+{% for classifier in additional_classifiers | default([]) %}
+    "{{ classifier }}",
+{% endfor %}
+]
+dependencies = [
+{% if package_type == "foundation-based" %}
+    "provide-foundation[all]>=0.1.0",
+{% endif %}
+{% if package_type == "pyvider-plugin" %}
+    "pyvider>=0.0.112",
+    "pyvider-cty>=0.0.113",
+    "pyvider-rpcplugin>=0.0.112",
+{% endif %}
+{% for dep in dependencies | default([]) %}
+    "{{ dep }}",
+{% endfor %}
+]
+
+{% if optional_dependencies %}
+[project.optional-dependencies]
+{% for group, deps in optional_dependencies.items() %}
+{{ group }} = [
+{% for dep in deps %}
+    "{{ dep }}",
+{% endfor %}
+]
+{% endfor %}
+{% endif %}
+
+[dependency-groups]
+dev = [
+{% if package_type == "foundation-based" %}
+    "provide-testkit[standard,advanced-testing,typecheck,utils,build]",
+{% elif package_type == "pyvider-plugin" %}
+    "provide-testkit[pyvider-dev]",
+{% else %}
+    "provide-testkit[all]",
+{% endif %}
+{% for dep in dev_dependencies | default([]) %}
+    "{{ dep }}",
+{% endfor %}
+]
+{% if has_docs %}
+docs = [
+    "provide-testkit[docs]",
+{% for dep in docs_dependencies | default([]) %}
+    "{{ dep }}",
+{% endfor %}
+]
+{% endif %}
+
+{% if scripts %}
+[project.scripts]
+{% for name, entry_point in scripts.items() %}
+{{ name }} = "{{ entry_point }}"
+{% endfor %}
+{% endif %}
+
+{% if project_urls %}
+[project.urls]
+{% for name, url in project_urls.items() %}
+{{ name }} = "{{ url }}"
+{% endfor %}
+{% endif %}
+
+[build-system]
+requires = ["{{ build_backend | default('setuptools>=61.0') }}"]
+build-backend = "{{ build_backend_module | default('setuptools.build_meta') }}"
+
+{% if workspace_sources %}
+[tool.uv.sources]
+{% for source, config in workspace_sources.items() %}
+{{ source }} = { workspace = {{ config.workspace | default('true') }} }
+{% endfor %}
+{% endif %}
+
+[tool.setuptools.dynamic]
+version = {file = "VERSION"}
+
+################################################################################
+# Tool Configuration
+################################################################################
+
+[tool.ruff]
+line-length = {{ ruff_line_length | default(111) }}
+indent-width = {{ ruff_indent_width | default(4) }}
+target-version = "py{{ python_version | default('3.11') | replace('.', '') }}"
+{% if ruff_exclude %}
+exclude = {{ format_dependencies(ruff_exclude) }}
+{% endif %}
+
+[tool.ruff.lint]
+select = {{ format_dependencies(ruff_select | default(["E", "F", "W", "I", "UP", "ANN", "B", "C90", "SIM", "PTH", "RUF"])) }}
+ignore = {{ format_dependencies(ruff_ignore | default(["ANN401", "B008", "E501"])) }}
+
+[tool.ruff.lint.isort]
+known-first-party = {{ format_dependencies(known_first_party | default([project_name])) }}
+force-sort-within-sections = true
+combine-as-imports = true
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+{% if use_mypy %}
+[tool.mypy]
+python_version = "{{ python_version | default('3.11') }}"
+mypy_path = "src"
+strict = {{ mypy_strict | default('true') }}
+pretty = true
+show_error_codes = true
+show_column_numbers = true
+warn_unused_ignores = true
+warn_unused_configs = true
+disallow_untyped_decorators = false
+{% if mypy_exclude %}
+exclude = {{ format_dependencies(mypy_exclude) }}
+{% endif %}
+
+{% if mypy_overrides %}
+{% for override in mypy_overrides %}
+[[tool.mypy.overrides]]
+module = {{ format_dependencies(override.modules) }}
+{% for key, value in override.settings.items() %}
+{{ key }} = {{ value }}
+{% endfor %}
+{% endfor %}
+{% endif %}
+{% endif %}
+
+{% if use_pytest %}
+[tool.pytest.ini_options]
+minversion = "7.0"
+log_cli = true
+log_cli_level = "DEBUG"
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*", "*Tests"]
+python_functions = ["test_*", "*_test"]
+addopts = [
+    "-ra",
+    "-q",
+    "--strict-markers",
+    "--color=yes",
+    "--tb=short",
+]
+markers = [
+    "unit: Fast unit tests",
+    "integration: Integration tests requiring setup",
+    "slow: Slow running tests (>1s)",
+    "fast: Fast tests (<100ms)",
+{% for marker in additional_markers | default([]) %}
+    "{{ marker }}",
+{% endfor %}
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning",
+    "ignore::pytest.PytestUnraisableExceptionWarning",
+]
+{% endif %}
+
+{% if use_coverage %}
+[tool.coverage.run]
+source = ["{{ project_name.replace('-', '_') }}"]
+branch = true
+parallel = true
+{% if coverage_omit %}
+omit = {{ format_dependencies(coverage_omit) }}
+{% endif %}
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+fail_under = {{ coverage_threshold | default(80) }}
+precision = 2
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "def __repr__",
+    "def __str__",
+    "@(abc\\.)?abstractmethod",
+    "pass",
+]
+{% endif %}
+
+{% if bandit_config %}
+[tool.bandit]
+exclude_dirs = {{ format_dependencies(bandit_exclude_dirs | default([".venv", "*/tests", "workenv"])) }}
+{% endif %}
+
+# 🐍🏗️⚙️

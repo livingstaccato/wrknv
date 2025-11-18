@@ -1,0 +1,169 @@
+name: 'Setup wrknv'
+description: 'Set up wrknv environment with specified tools'
+author: 'wrknv team'
+
+inputs:
+  python-version:
+    description: 'Python version to use'
+    required: false
+    default: '3.11'
+  uv-version:
+    description: 'UV version to install'
+    required: false
+    default: '0.4.0'
+  terraform-version:
+    description: 'Terraform version to install (optional)'
+    required: false
+  tofu-version:
+    description: 'OpenTofu version to install (optional)'
+    required: false
+  go-version:
+    description: 'Go version to install (optional)'
+    required: false
+  config-file:
+    description: 'Path to wrknv.toml configuration file'
+    required: false
+    default: 'wrknv.toml'
+  profile:
+    description: 'Profile to load from configuration'
+    required: false
+  install-from:
+    description: 'Installation source: pypi, github, or local'
+    required: false
+    default: 'pypi'
+  version:
+    description: 'wrknv version to install (for pypi/github)'
+    required: false
+    default: 'latest'
+
+outputs:
+  wrknv-version:
+    description: 'Installed wrknv version'
+    value: ${{ steps.version.outputs.version }}
+  workenv-path:
+    description: 'Path to the workenv directory'
+    value: ${{ steps.setup.outputs.workenv-path }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+    
+    - name: Install UV
+      shell: bash
+      run: |
+        curl -LsSf https://astral.sh/uv/${{ inputs.uv-version }}/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+    
+    - name: Install wrknv from PyPI
+      if: inputs.install-from == 'pypi'
+      shell: bash
+      run: |
+        if [[ "${{ inputs.version }}" == "latest" ]]; then
+          pip install wrknv
+        else
+          pip install wrknv==${{ inputs.version }}
+        fi
+    
+    - name: Install wrknv from GitHub
+      if: inputs.install-from == 'github'
+      shell: bash
+      run: |
+        if [[ "${{ inputs.version }}" == "latest" ]]; then
+          pip install git+https://github.com/provide-io/wrknv.git
+        else
+          pip install git+https://github.com/provide-io/wrknv.git@${{ inputs.version }}
+        fi
+    
+    - name: Install wrknv from local
+      if: inputs.install-from == 'local'
+      shell: bash
+      run: |
+        pip install -e .
+    
+    - name: Get wrknv version
+      id: version
+      shell: bash
+      run: |
+        VERSION=$(wrknv --version | cut -d' ' -f2)
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "Installed wrknv version: $VERSION"
+    
+    - name: Setup wrknv environment
+      id: setup
+      shell: bash
+      run: |
+        # Initialize wrknv
+        wrknv setup --init
+        
+        # Set workenv path
+        WORKENV_PATH="$PWD/workenv"
+        echo "workenv-path=$WORKENV_PATH" >> $GITHUB_OUTPUT
+        
+        # Add to PATH
+        echo "$WORKENV_PATH/bin" >> $GITHUB_PATH
+    
+    - name: Load configuration
+      if: inputs.config-file != ''
+      shell: bash
+      run: |
+        if [[ -f "${{ inputs.config-file }}" ]]; then
+          echo "Loading configuration from ${{ inputs.config-file }}"
+          # Sync tools from configuration
+          wrknv sync
+        fi
+    
+    - name: Load profile
+      if: inputs.profile != ''
+      shell: bash
+      run: |
+        echo "Loading profile: ${{ inputs.profile }}"
+        wrknv profile load ${{ inputs.profile }}
+    
+    - name: Install Terraform
+      if: inputs.terraform-version != ''
+      shell: bash
+      run: |
+        echo "Installing Terraform ${{ inputs.terraform-version }}"
+        wrknv tf --terraform ${{ inputs.terraform-version }}
+    
+    - name: Install OpenTofu
+      if: inputs.tofu-version != ''
+      shell: bash
+      run: |
+        echo "Installing OpenTofu ${{ inputs.tofu-version }}"
+        wrknv tf ${{ inputs.tofu-version }}
+    
+    - name: Install Go
+      if: inputs.go-version != ''
+      shell: bash
+      run: |
+        echo "Installing Go ${{ inputs.go-version }}"
+        # This would need to be implemented in wrknv
+        echo "Go installation through wrknv not yet implemented"
+    
+    - name: Verify installation
+      shell: bash
+      run: |
+        echo "## wrknv Setup Complete" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- wrknv version: $(wrknv --version)" >> $GITHUB_STEP_SUMMARY
+        echo "- Python version: $(python --version)" >> $GITHUB_STEP_SUMMARY
+        echo "- UV version: $(uv --version)" >> $GITHUB_STEP_SUMMARY
+        
+        if command -v terraform &> /dev/null; then
+          echo "- Terraform version: $(terraform --version | head -1)" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        if command -v tofu &> /dev/null; then
+          echo "- OpenTofu version: $(tofu --version | head -1)" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        wrknv status || true
+
+branding:
+  icon: 'package'
+  color: 'blue'

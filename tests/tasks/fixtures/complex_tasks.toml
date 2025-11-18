@@ -1,0 +1,19 @@
+# Complex task definitions for testing
+
+[tasks.build]
+run = "uv build"
+description = "Build Python package"
+env = { PYTHONPATH = "src", BUILD_ENV = "test" }
+
+[tasks.test-verbose]
+run = "uv run pytest tests/ -vvv"
+description = "Run tests with verbose output"
+working_dir = "."
+
+[tasks.quality]
+run = ["lint", "typecheck"]
+description = "Run all quality checks"
+
+[tasks.ci]
+run = ["quality", "test", "build"]
+description = "Complete CI pipeline"

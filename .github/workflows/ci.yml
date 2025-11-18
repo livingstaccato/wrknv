@@ -1,0 +1,179 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: "3.11"
+  UV_VERSION: "0.4.0"
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Install UV
+        uses: astral-sh/setup-uv@v2
+        with:
+          version: ${{ env.UV_VERSION }}
+      
+      - name: Create virtual environment
+        run: uv venv
+      
+      - name: Install dependencies
+        run: |
+          source .venv/bin/activate
+          uv pip install -e ".[dev]"
+      
+      - name: Run quality checks
+        run: |
+          source .venv/bin/activate
+          we run quality
+
+  test:
+    name: Test Python ${{ matrix.python-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.11", "3.12", "3.13"]
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: Install UV
+        uses: astral-sh/setup-uv@v2
+        with:
+          version: ${{ env.UV_VERSION }}
+      
+      - name: Create virtual environment
+        run: uv venv
+      
+      - name: Install dependencies (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          source .venv/bin/activate
+          uv pip install -e ".[dev]"
+      
+      - name: Install dependencies (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          .venv\Scripts\activate
+          uv pip install -e ".[dev]"
+      
+      - name: Run tests with coverage (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          source .venv/bin/activate
+          we run test.coverage.xml
+
+      - name: Run tests with coverage (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          .venv\Scripts\activate
+          we run test.coverage.xml
+      
+      - name: Upload coverage to Codecov
+        if: matrix.python-version == '3.11' && matrix.os == 'ubuntu-latest'
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage.xml
+          fail_ci_if_error: false
+
+  integration:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Install UV
+        uses: astral-sh/setup-uv@v2
+        with:
+          version: ${{ env.UV_VERSION }}
+      
+      - name: Create virtual environment
+        run: uv venv
+      
+      - name: Install dependencies
+        run: |
+          source .venv/bin/activate
+          uv pip install -e ".[dev]"
+      
+      - name: Test CLI commands
+        run: |
+          source .venv/bin/activate
+          wrknv --help
+          wrknv config path
+          wrknv setup --check
+      
+      - name: Test config initialization
+        run: |
+          source .venv/bin/activate
+          cd /tmp
+          echo -e "test-project\n1.0.0\nINFO\nn\nn\nn\nn\n" | wrknv config init
+          cat wrknv.toml
+      
+      - name: Test profile operations
+        run: |
+          source .venv/bin/activate
+          wrknv profile list
+          wrknv profile save test-profile --force || true
+
+  build:
+    name: Build Distribution
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Install UV
+        uses: astral-sh/setup-uv@v2
+        with:
+          version: ${{ env.UV_VERSION }}
+      
+      - name: Build wheel and sdist
+        run: |
+          uv venv
+          source .venv/bin/activate
+          uv pip install -e ".[dev]"
+          we run build
+      
+      - name: Check distributions
+        run: |
+          ls -la dist/
+          python -m pip install twine
+          twine check dist/*
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/

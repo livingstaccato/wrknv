@@ -1,0 +1,31 @@
+# Simple Tasks Example
+# ====================
+# This example demonstrates basic flat task definitions.
+
+project_name = "simple-tasks-example"
+version = "1.0.0"
+
+# Simple flat tasks
+[tasks]
+# Run tests
+test = "pytest tests/"
+
+# Code quality
+lint = "ruff check src/"
+format = "ruff format src/"
+typecheck = "mypy src/"
+
+# Build
+build = "python -m build"
+
+# Documentation
+docs = "mkdocs serve"
+
+# Composite tasks
+[tasks.quality]
+run = ["lint", "typecheck"]
+description = "Run all quality checks"
+
+[tasks.ci]
+run = ["quality", "test", "build"]
+description = "Complete CI pipeline"

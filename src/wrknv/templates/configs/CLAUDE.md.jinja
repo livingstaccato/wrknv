@@ -1,0 +1,155 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+`{{ project_name }}` is {{ description | default('a Python project in the provide ecosystem') }}.
+
+## Development Environment Setup
+
+**IMPORTANT**: Use `source workenv/env.sh` to set up the environment. This script provisions a virtual environment in `workenv/` (NOT `.venv`). The environment setup handles:
+- Python {{ python_version | default('3.11') }}+ requirement
+- UV package manager for dependency management
+- Platform-specific virtual environments
+
+## Common Development Commands
+
+```bash
+# Environment setup (always use this instead of manual venv creation)
+source workenv/env.sh
+
+# Run tests
+pytest                           # Run all tests
+pytest -n auto                   # Run tests in parallel
+pytest -n auto -vvv             # Verbose parallel test run
+pytest tests/test_specific.py   # Run specific test file
+pytest -k "test_name"           # Run tests matching pattern
+
+# Code quality checks
+ruff check .                    # Run linter
+ruff format .                   # Format code
+{% if use_mypy %}
+mypy src/                       # Type checking
+{% endif %}
+
+# Build and distribution
+uv build                        # Build package
+uv publish                      # Publish to PyPI
+```
+
+## Architecture & Code Structure
+
+### Core Components
+
+{% if package_type == "foundation-based" %}
+1. **Logger System**: Uses provide-foundation for structured logging
+2. **Configuration System**: Async-first configuration loading
+3. **Modern Python Typing**: Uses Python {{ python_version | default('3.11') }}+ type hints
+{% elif package_type == "pyvider-plugin" %}
+1. **Component Model**: Uses pyvider's hub-based discovery system
+2. **Protocol Integration**: Implements Terraform Plugin Protocol
+3. **Schema System**: Type-safe data modeling with validation
+{% endif %}
+
+### Key Design Patterns
+
+1. **Lazy Initialization**: Avoid import-time side effects
+2. **Immutable Configuration**: Uses `attrs` with frozen dataclasses
+3. **Modern Python Typing**: Uses Python {{ python_version | default('3.11') }}+ type hints (no Dict/List/Optional)
+4. **No Inline Defaults**: All defaults come from configuration files
+
+### Important Implementation Notes
+
+{% if package_type == "foundation-based" %}
+1. **Foundation Integration**: Always use Foundation logger (`from provide.foundation import logger`)
+2. **Testing**: Use `provide-testkit` for all testing infrastructure
+3. **Thread Safety**: All operations are thread-safe and async-compatible
+{% elif package_type == "pyvider-plugin" %}
+1. **Component Registration**: Components must use decorators to register with the hub
+2. **Schema Definition**: Use attrs-based models with type annotations
+3. **Testing**: Property-based testing with Hypothesis recommended
+{% endif %}
+
+## Testing Strategy
+
+### Core Testing Requirements
+
+{% if package_type == "foundation-based" %}
+**CRITICAL**: When testing {{ project_name }} or any application that uses it, `provide-testkit` MUST be available and used.
+
+- **provide-testkit dependency**: Required in dev dependencies
+- **Foundation reset**: Use `reset_foundation_setup_for_testing()` in test fixtures
+- **Log stream control**: Use `set_log_stream_for_testing()` for capturing logs
+{% else %}
+- Comprehensive test coverage including unit, integration tests
+- Tests use `pytest` with async support via `pytest-asyncio`
+- Parallel test execution with `pytest-xdist`
+{% endif %}
+
+### Standard Testing Pattern
+
+```python
+import pytest
+{% if package_type == "foundation-based" %}
+from provide.testkit import (
+    reset_foundation_setup_for_testing,
+    set_log_stream_for_testing,
+)
+
+@pytest.fixture(autouse=True)
+def reset_foundation():
+    """Reset Foundation state before each test."""
+    reset_foundation_setup_for_testing()
+{% else %}
+@pytest.fixture
+def sample_fixture():
+    """Example test fixture."""
+    return "test_data"
+{% endif %}
+```
+
+## Development Guidelines
+
+- Always use modern Python {{ python_version | default('3.11') }}+ type hints (e.g., `list[str]` not `List[str]`)
+- Maintain immutability in configuration objects
+- Use `attrs` for data classes consistently
+- No migration, backward compatibility, or legacy logic unless explicitly approved
+{% if package_type == "foundation-based" %}
+- Only use foundation.logger - never structlog directly
+{% endif %}
+- Only use absolute imports. Never relative imports
+- Use async in pytests where appropriate
+- No inline defaults. Defaults should come from configuration modules
+
+## Output Guidelines
+
+**IMPORTANT**: Use the correct output method for the context:
+
+{% if package_type == "foundation-based" %}
+- **CLI User-Facing Output**: Use `pout()` for standard output and `perr()` for error messages
+  - These are in `provide.foundation.console.output`
+  - Never use `print()` directly in CLI commands
+  - Example: `pout("✅ Operation successful")` or `perr("❌ Operation failed")`
+
+- **Application Logging**: Use `logger` strictly for internal logging/debugging
+  - Import with: `from provide.foundation import logger`
+  - Example: `logger.debug("Internal state changed", state=new_state)`
+{% else %}
+- **CLI Output**: Use appropriate logging levels
+- **Application Logging**: Use structured logging where possible
+{% endif %}
+
+## Code Quality
+
+- It is okay to use `from __future__ import annotations` for unquoted types
+- After updating Python files, run `ruff format` and `ruff check --fix`
+- Maintain consistent code style across the project
+
+{% if custom_guidelines %}
+## Project-Specific Guidelines
+
+{% for guideline in custom_guidelines %}
+- {{ guideline }}
+{% endfor %}
+{% endif %}
