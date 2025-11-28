@@ -46,6 +46,7 @@ dev = [
     "ruff>=0.1.0",
     "mypy>=1.0",
     "bandit>=1.7.0",
+    "provide-testkit",
 ]
 
 [project.scripts]
@@ -219,6 +220,9 @@ dev = [
     "pytest-cov>=6.2.1",
     "pytest-xdist>=3.8.0",
 ]
+
+[tool.uv.sources]
+provide-testkit = { path = "../provide-testkit", editable = true }
 
 [tool.flavor]
 # Configuration for packaging wrknv with flavor
