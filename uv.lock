@@ -1750,6 +1750,7 @@ dev = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "provide-testkit" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
     { name = "pytest-benchmark" },
@@ -1781,6 +1782,7 @@ provides-extras = ["package", "dev"]
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "provide-testkit", editable = "../provide-testkit" },
     { name = "pytest", specifier = ">=8.4.1" },
     { name = "pytest-asyncio", specifier = ">=1.1.0" },
     { name = "pytest-benchmark", specifier = ">=5.1.0" },

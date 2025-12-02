@@ -214,6 +214,7 @@ output = "coverage.xml"
 
 [dependency-groups]
 dev = [
+    "provide-testkit",
     "pytest>=8.4.1",
     "pytest-asyncio>=1.1.0",
     "pytest-benchmark>=5.1.0",
