@@ -180,14 +180,14 @@ class WorkenvConfig(RuntimeConfig):
         """Check if configuration file exists."""
         if self._persistence is None:
             return False
-        return self._persistence.config_exists()  # type: ignore[no-any-return]
+        return self._persistence.config_exists()
 
     def get_config_path(self) -> Path:
         """Get path to configuration file."""
         if self._persistence is None:
             msg = "Persistence handler not initialized"
             raise RuntimeError(msg)
-        return self._persistence.get_config_path()  # type: ignore[no-any-return]
+        return self._persistence.get_config_path()
 
     def get_tool_version(self, tool_name: str) -> str | None:
         """Get version for a specific tool."""
@@ -308,7 +308,7 @@ class WorkenvConfig(RuntimeConfig):
         """Convert configuration to dictionary."""
         if self._persistence is None:
             return {}
-        return self._persistence.to_dict()  # type: ignore[no-any-return]
+        return self._persistence.to_dict()
 
     def write_config(self, config_data: dict[str, Any]) -> None:
         """Write configuration data to file."""
@@ -330,7 +330,7 @@ class WorkenvConfig(RuntimeConfig):
         """
         if self._validator is None:
             return True, []
-        return self._validator.validate()  # type: ignore[no-any-return]
+        return self._validator.validate()
 
     def validate(self) -> tuple[bool, list[str]]:
         """Validate configuration comprehensively.
