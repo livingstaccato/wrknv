@@ -244,17 +244,17 @@ class TestChecksumUrl(FoundationTestCase):
 class TestListVersions(FoundationTestCase):
     """Test list_versions method."""
 
-    @patch("builtins.print")
+    @patch("wrknv.wenv.managers.base.pout")
     @patch.object(ConcreteToolManager, "get_installed_version", return_value="1.0.0")
-    def test_list_versions(self, mock_version: Mock, mock_print: Mock) -> None:
+    def test_list_versions(self, mock_version: Mock, mock_pout: Mock) -> None:
         """Test listing versions."""
         manager = ConcreteToolManager()
         manager.list_versions(limit=10)
-        assert mock_print.called
+        assert mock_pout.called
 
-    @patch("builtins.print")
+    @patch("wrknv.wenv.managers.base.pout")
     @patch.object(ConcreteToolManager, "get_available_versions", side_effect=Exception("API Error"))
-    def test_list_versions_error(self, mock_versions: Mock, mock_print: Mock) -> None:
+    def test_list_versions_error(self, mock_versions: Mock, mock_pout: Mock) -> None:
         """Test list_versions handles errors."""
         manager = ConcreteToolManager()
         with pytest.raises(ToolManagerError):
@@ -264,11 +264,11 @@ class TestListVersions(FoundationTestCase):
 class TestShowCurrent(FoundationTestCase):
     """Test show_current method."""
 
-    @patch("builtins.print")
+    @patch("wrknv.wenv.managers.base.pout")
     @patch.object(ConcreteToolManager, "get_installed_version", return_value="1.0.0")
     @patch.object(ConcreteToolManager, "get_current_binary_path")
     def test_show_current_installed(
-        self, mock_binary: Mock, mock_version: Mock, mock_print: Mock, tmp_path: Path
+        self, mock_binary: Mock, mock_version: Mock, mock_pout: Mock, tmp_path: Path
     ) -> None:
         """Test showing current version when installed."""
         binary_path = tmp_path / "testtool"
@@ -277,17 +277,17 @@ class TestShowCurrent(FoundationTestCase):
 
         manager = ConcreteToolManager()
         manager.show_current()
-        mock_print.assert_called_once()
-        assert "1.0.0" in mock_print.call_args[0][0]
+        mock_pout.assert_called_once()
+        assert "1.0.0" in mock_pout.call_args[0][0]
 
-    @patch("builtins.print")
+    @patch("wrknv.wenv.managers.base.pout")
     @patch.object(ConcreteToolManager, "get_installed_version", return_value=None)
-    def test_show_current_not_installed(self, mock_version: Mock, mock_print: Mock) -> None:
+    def test_show_current_not_installed(self, mock_version: Mock, mock_pout: Mock) -> None:
         """Test showing current version when not installed."""
         manager = ConcreteToolManager()
         manager.show_current()
-        mock_print.assert_called_once()
-        assert "not installed" in mock_print.call_args[0][0]
+        mock_pout.assert_called_once()
+        assert "not installed" in mock_pout.call_args[0][0]
 
 
 if __name__ == "__main__":
