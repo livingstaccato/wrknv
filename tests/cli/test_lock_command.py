@@ -421,8 +421,10 @@ class TestLockSyncCommand(FoundationTestCase):
                 mock_load.return_value = mock_config
 
                 mock_manager = Mock()
-                mock_manager.lockfile_path = Path("/tmp/wrknv.lock")
-                mock_manager.lockfile_path.exists.return_value = False
+                mock_lockfile_path = Mock()
+                mock_lockfile_path.exists.return_value = False
+                mock_lockfile_path.__str__ = Mock(return_value="/tmp/wrknv.lock")
+                mock_manager.lockfile_path = mock_lockfile_path
                 mock_manager_class.return_value = mock_manager
 
                 runner = click.testing.CliRunner()
@@ -440,8 +442,10 @@ class TestLockSyncCommand(FoundationTestCase):
                 mock_load.return_value = mock_config
 
                 mock_manager = Mock()
-                mock_manager.lockfile_path = Path("/tmp/wrknv.lock")
-                mock_manager.lockfile_path.exists.return_value = True
+                mock_lockfile_path = Mock()
+                mock_lockfile_path.exists.return_value = True
+                mock_lockfile_path.__str__ = Mock(return_value="/tmp/wrknv.lock")
+                mock_manager.lockfile_path = mock_lockfile_path
                 mock_manager.is_lockfile_valid.return_value = False
                 mock_manager_class.return_value = mock_manager
 
@@ -460,8 +464,10 @@ class TestLockSyncCommand(FoundationTestCase):
                 mock_load.return_value = mock_config
 
                 mock_manager = Mock()
-                mock_manager.lockfile_path = Path("/tmp/wrknv.lock")
-                mock_manager.lockfile_path.exists.return_value = True
+                mock_lockfile_path = Mock()
+                mock_lockfile_path.exists.return_value = True
+                mock_lockfile_path.__str__ = Mock(return_value="/tmp/wrknv.lock")
+                mock_manager.lockfile_path = mock_lockfile_path
                 mock_manager.is_lockfile_valid.return_value = True
                 mock_manager.load_lockfile.return_value = None
                 mock_manager_class.return_value = mock_manager
@@ -497,8 +503,10 @@ class TestLockSyncCommand(FoundationTestCase):
                     mock_lockfile.resolved_tools = {"go": tool1, "terraform": tool2}
 
                     mock_manager = Mock()
-                    mock_manager.lockfile_path = Path("/tmp/wrknv.lock")
-                    mock_manager.lockfile_path.exists.return_value = True
+                    mock_lockfile_path = Mock()
+                    mock_lockfile_path.exists.return_value = True
+                    mock_lockfile_path.__str__ = Mock(return_value="/tmp/wrknv.lock")
+                    mock_manager.lockfile_path = mock_lockfile_path
                     mock_manager.is_lockfile_valid.return_value = True
                     mock_manager.load_lockfile.return_value = mock_lockfile
                     mock_manager_class.return_value = mock_manager
@@ -542,8 +550,10 @@ class TestLockSyncCommand(FoundationTestCase):
                     mock_lockfile.resolved_tools = {"go": tool1, "terraform@linux": tool2}
 
                     mock_manager = Mock()
-                    mock_manager.lockfile_path = Path("/tmp/wrknv.lock")
-                    mock_manager.lockfile_path.exists.return_value = True
+                    mock_lockfile_path = Mock()
+                    mock_lockfile_path.exists.return_value = True
+                    mock_lockfile_path.__str__ = Mock(return_value="/tmp/wrknv.lock")
+                    mock_manager.lockfile_path = mock_lockfile_path
                     mock_manager.is_lockfile_valid.return_value = True
                     mock_manager.load_lockfile.return_value = mock_lockfile
                     mock_manager_class.return_value = mock_manager
@@ -588,8 +598,10 @@ class TestLockSyncCommand(FoundationTestCase):
                     mock_lockfile.resolved_tools = {"go": tool1, "terraform": tool2}
 
                     mock_manager = Mock()
-                    mock_manager.lockfile_path = Path("/tmp/wrknv.lock")
-                    mock_manager.lockfile_path.exists.return_value = True
+                    mock_lockfile_path = Mock()
+                    mock_lockfile_path.exists.return_value = True
+                    mock_lockfile_path.__str__ = Mock(return_value="/tmp/wrknv.lock")
+                    mock_manager.lockfile_path = mock_lockfile_path
                     mock_manager.is_lockfile_valid.return_value = True
                     mock_manager.load_lockfile.return_value = mock_lockfile
                     mock_manager_class.return_value = mock_manager
@@ -623,7 +635,9 @@ class TestLockSyncCommand(FoundationTestCase):
                 mock_load.return_value = mock_config
 
                 mock_manager = Mock()
-                mock_manager.lockfile_path.exists.side_effect = Exception("Filesystem error")
+                mock_lockfile_path = Mock()
+                mock_lockfile_path.exists.side_effect = Exception("Filesystem error")
+                mock_manager.lockfile_path = mock_lockfile_path
                 mock_manager_class.return_value = mock_manager
 
                 runner = click.testing.CliRunner()
