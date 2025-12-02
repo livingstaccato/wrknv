@@ -39,12 +39,12 @@ package = [
     # "flavor",  # Install with: uv pip install -e ~/code/gh/provide-io/flavor
 ]
 dev = [
-    "pytest>=7.0",
+    "pytest>=8.3.5",
     "pytest-asyncio>=0.21",
     "pytest-cov>=4.0",
     "black>=23.0",
-    "ruff>=0.1.0",
-    "mypy>=1.0",
+    "ruff>=0.11.8",
+    "mypy>=1.17.1",
     "bandit>=1.7.0",
     "provide-testkit",
 ]
