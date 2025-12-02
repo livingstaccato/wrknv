@@ -1185,7 +1185,6 @@ requires-dist = [
     { name = "ruff", marker = "extra == 'quality'", specifier = ">=0.11.8" },
     { name = "safety", marker = "extra == 'security'", specifier = ">=3.0.0" },
     { name = "sapp", marker = "extra == 'utils'", specifier = ">=0.4" },
-    { name = "semgrep", marker = "extra == 'security'", specifier = ">=1.50.0" },
     { name = "tabulate", marker = "extra == 'utils'", specifier = ">=0.9.0" },
     { name = "twine", marker = "extra == 'build'", specifier = ">=6.1.0" },
     { name = "ty", marker = "extra == 'typecheck'", specifier = ">=0.0.1a6" },
