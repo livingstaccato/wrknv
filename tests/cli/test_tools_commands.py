@@ -405,9 +405,7 @@ class TestGenerateEnvCommand(FoundationTestCase):
             mock_create.return_value = (sh_path, ps1_path)
 
             runner = click.testing.CliRunner()
-            result = runner.invoke(
-                cli, ["generate-env", "--shell", "powershell", str(output_path)]
-            )
+            result = runner.invoke(cli, ["generate-env", "--shell", "powershell", str(output_path)])
 
             assert result.exit_code == 0
             # Should move ps1 file to custom location

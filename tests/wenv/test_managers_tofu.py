@@ -67,9 +67,7 @@ class TestGetAvailableVersions(FoundationTestCase):
         assert "v1.6.0" not in versions
 
     @patch("wrknv.wenv.managers.tofu.urlopen")
-    def test_get_available_versions_includes_prereleases(
-        self, mock_urlopen: Mock
-    ) -> None:
+    def test_get_available_versions_includes_prereleases(self, mock_urlopen: Mock) -> None:
         """Test fetching versions including prereleases when configured."""
         mock_response = MagicMock()
         mock_response.read.return_value = json.dumps(
@@ -88,9 +86,7 @@ class TestGetAvailableVersions(FoundationTestCase):
             assert "1.6.0-rc1" in versions
 
     @patch("wrknv.wenv.managers.tofu.urlopen")
-    def test_get_available_versions_filters_prereleases(
-        self, mock_urlopen: Mock
-    ) -> None:
+    def test_get_available_versions_filters_prereleases(self, mock_urlopen: Mock) -> None:
         """Test that prereleases are filtered by default."""
         mock_response = MagicMock()
         mock_response.read.return_value = json.dumps(
@@ -132,9 +128,7 @@ class TestGetAvailableVersions(FoundationTestCase):
         assert versions[2] == "1.5.0"
 
     @patch("wrknv.wenv.managers.tofu.urlopen", side_effect=Exception("Network error"))
-    def test_get_available_versions_network_failure(
-        self, mock_urlopen: Mock
-    ) -> None:
+    def test_get_available_versions_network_failure(self, mock_urlopen: Mock) -> None:
         """Test handling network failures."""
         manager = TofuManager()
         with pytest.raises(ToolManagerError, match="Failed to fetch OpenTofu versions"):
@@ -225,9 +219,7 @@ class TestVerifyInstallation(FoundationTestCase):
         binary_path.touch()
 
         # Mock subprocess to return successful version check
-        mock_run.return_value = Mock(
-            returncode=0, stdout="OpenTofu v1.6.0\n", stderr=""
-        )
+        mock_run.return_value = Mock(returncode=0, stdout="OpenTofu v1.6.0\n", stderr="")
 
         result = manager.verify_installation("1.6.0")
 
@@ -236,9 +228,7 @@ class TestVerifyInstallation(FoundationTestCase):
         assert mock_run.call_args[0][0][1] == "-version"
 
     @patch("subprocess.run")
-    def test_verify_installation_version_mismatch(
-        self, mock_run: Mock, tmp_path: Path
-    ) -> None:
+    def test_verify_installation_version_mismatch(self, mock_run: Mock, tmp_path: Path) -> None:
         """Test verification fails on version mismatch."""
         manager = TofuManager()
 
@@ -247,9 +237,7 @@ class TestVerifyInstallation(FoundationTestCase):
         binary_path.touch()
 
         # Mock subprocess with wrong version
-        mock_run.return_value = Mock(
-            returncode=0, stdout="OpenTofu v1.5.0\n", stderr=""
-        )
+        mock_run.return_value = Mock(returncode=0, stdout="OpenTofu v1.5.0\n", stderr="")
 
         result = manager.verify_installation("1.6.0")
         assert result is False
@@ -262,9 +250,7 @@ class TestVerifyInstallation(FoundationTestCase):
         assert result is False
 
     @patch("subprocess.run", side_effect=Exception("Command failed"))
-    def test_verify_installation_subprocess_error(
-        self, mock_run: Mock, tmp_path: Path
-    ) -> None:
+    def test_verify_installation_subprocess_error(self, mock_run: Mock, tmp_path: Path) -> None:
         """Test verification handles subprocess errors."""
         manager = TofuManager()
 

@@ -113,7 +113,9 @@ class TestRunCommand(FoundationTestCase):
             assert result.exit_code == 0
             assert "Task not found" in result.output
 
-    @pytest.mark.skip(reason="--env parameter doesn't work due to foundation hub not converting tuple[str, ...] to multiple=True")
+    @pytest.mark.skip(
+        reason="--env parameter doesn't work due to foundation hub not converting tuple[str, ...] to multiple=True"
+    )
     def test_run_task_with_env_vars(self) -> None:
         """Test running task with environment variables."""
         cli = get_test_cli()

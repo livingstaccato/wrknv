@@ -38,7 +38,7 @@ class TestLockGenerateCommand(FoundationTestCase):
 
             mock_lockfile = Mock()
             mock_lockfile.lockfile_path = Mock()
-            mock_lockfile.lockfile_path.exists.return_value =False
+            mock_lockfile.lockfile_path.exists.return_value = False
             mock_lockfile_cls.return_value = mock_lockfile
 
             runner = click.testing.CliRunner()
@@ -61,7 +61,7 @@ class TestLockGenerateCommand(FoundationTestCase):
 
             mock_lockfile = Mock()
             mock_lockfile.lockfile_path = Mock()
-            mock_lockfile.lockfile_path.exists.return_value =True
+            mock_lockfile.lockfile_path.exists.return_value = True
             mock_lockfile_cls.return_value = mock_lockfile
 
             runner = click.testing.CliRunner()
@@ -85,7 +85,7 @@ class TestLockGenerateCommand(FoundationTestCase):
 
             mock_lockfile = Mock()
             mock_lockfile.lockfile_path = Mock()
-            mock_lockfile.lockfile_path.exists.return_value =True
+            mock_lockfile.lockfile_path.exists.return_value = True
             mock_lockfile_cls.return_value = mock_lockfile
 
             runner = click.testing.CliRunner()
@@ -107,7 +107,7 @@ class TestLockGenerateCommand(FoundationTestCase):
 
             mock_lockfile = Mock()
             mock_lockfile.lockfile_path = Mock()
-            mock_lockfile.lockfile_path.exists.return_value =False
+            mock_lockfile.lockfile_path.exists.return_value = False
             mock_lockfile.resolve_and_lock.side_effect = Exception("Network error")
             mock_lockfile_cls.return_value = mock_lockfile
 
@@ -134,7 +134,7 @@ class TestLockCheckCommand(FoundationTestCase):
 
             mock_lockfile = Mock()
             mock_lockfile.lockfile_path = Mock()
-            mock_lockfile.lockfile_path.exists.return_value =True
+            mock_lockfile.lockfile_path.exists.return_value = True
             mock_lockfile.is_lockfile_valid.return_value = True
             mock_lockfile_cls.return_value = mock_lockfile
 
@@ -157,7 +157,7 @@ class TestLockCheckCommand(FoundationTestCase):
 
             mock_lockfile = Mock()
             mock_lockfile.lockfile_path = Mock()
-            mock_lockfile.lockfile_path.exists.return_value =True
+            mock_lockfile.lockfile_path.exists.return_value = True
             mock_lockfile.is_lockfile_valid.return_value = False
             mock_lockfile_cls.return_value = mock_lockfile
 
@@ -180,7 +180,7 @@ class TestLockCheckCommand(FoundationTestCase):
 
             mock_lockfile = Mock()
             mock_lockfile.lockfile_path = Mock()
-            mock_lockfile.lockfile_path.exists.return_value =False
+            mock_lockfile.lockfile_path.exists.return_value = False
             mock_lockfile_cls.return_value = mock_lockfile
 
             runner = click.testing.CliRunner()
@@ -254,7 +254,7 @@ class TestLockShowCommand(FoundationTestCase):
         with patch("wrknv.cli.commands.lock.LockfileManager") as mock_lockfile_cls:
             mock_lockfile = Mock()
             mock_lockfile.lockfile_path = Mock()
-            mock_lockfile.lockfile_path.exists.return_value =False
+            mock_lockfile.lockfile_path.exists.return_value = False
             mock_lockfile_cls.return_value = mock_lockfile
 
             runner = click.testing.CliRunner()
@@ -270,7 +270,7 @@ class TestLockShowCommand(FoundationTestCase):
         with patch("wrknv.cli.commands.lock.LockfileManager") as mock_lockfile_cls:
             mock_lockfile = Mock()
             mock_lockfile.lockfile_path = Mock()
-            mock_lockfile.lockfile_path.exists.return_value =True
+            mock_lockfile.lockfile_path.exists.return_value = True
             mock_lockfile.load_lockfile.return_value = None
             mock_lockfile_cls.return_value = mock_lockfile
 
@@ -309,7 +309,7 @@ class TestLockCleanCommand(FoundationTestCase):
         with patch("wrknv.cli.commands.lock.LockfileManager") as mock_lockfile_cls:
             mock_lockfile = Mock()
             mock_lockfile.lockfile_path = Mock()
-            mock_lockfile.lockfile_path.exists.return_value =False
+            mock_lockfile.lockfile_path.exists.return_value = False
             mock_lockfile_cls.return_value = mock_lockfile
 
             runner = click.testing.CliRunner()
@@ -370,7 +370,7 @@ class TestLockSyncCommand(FoundationTestCase):
 
             mock_lockfile = Mock()
             mock_lockfile.lockfile_path = Mock()
-            mock_lockfile.lockfile_path.exists.return_value =False
+            mock_lockfile.lockfile_path.exists.return_value = False
             mock_lockfile_cls.return_value = mock_lockfile
 
             runner = click.testing.CliRunner()
@@ -392,7 +392,7 @@ class TestLockSyncCommand(FoundationTestCase):
 
             mock_lockfile = Mock()
             mock_lockfile.lockfile_path = Mock()
-            mock_lockfile.lockfile_path.exists.return_value =True
+            mock_lockfile.lockfile_path.exists.return_value = True
             mock_lockfile.is_lockfile_valid.return_value = False
             mock_lockfile_cls.return_value = mock_lockfile
 

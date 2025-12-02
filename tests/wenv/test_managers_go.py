@@ -171,9 +171,7 @@ class TestGetDownloadUrl(FoundationTestCase):
         manager = GoManager()
 
         # Mock custom mirror configuration
-        with patch.object(
-            manager.config, "get_setting", return_value="https://mirror.example.com/go"
-        ):
+        with patch.object(manager.config, "get_setting", return_value="https://mirror.example.com/go"):
             url = manager.get_download_url("1.22.0")
             assert "mirror.example.com/go" in url
             assert "go1.22.0.linux-amd64.tar.gz" in url
@@ -207,9 +205,7 @@ class TestInstallFromArchive(FoundationTestCase):
         """Test successful installation from archive."""
         config = WorkenvConfig()
         # Properly set install path via config setting
-        with patch.object(
-            config, "get_setting", return_value=str(tmp_path / "tools")
-        ):
+        with patch.object(config, "get_setting", return_value=str(tmp_path / "tools")):
             manager = GoManager(config)
 
         # Create fake extracted Go structure
@@ -241,9 +237,7 @@ class TestInstallFromArchive(FoundationTestCase):
     ) -> None:
         """Test error when go directory not found in archive."""
         config = WorkenvConfig()
-        with patch.object(
-            config, "get_setting", return_value=str(tmp_path / "tools")
-        ):
+        with patch.object(config, "get_setting", return_value=str(tmp_path / "tools")):
             manager = GoManager(config)
 
         # Create extract dir without 'go' subdirectory
@@ -264,9 +258,7 @@ class TestInstallFromArchive(FoundationTestCase):
     ) -> None:
         """Test error when go binary not found in archive."""
         config = WorkenvConfig()
-        with patch.object(
-            config, "get_setting", return_value=str(tmp_path / "tools")
-        ):
+        with patch.object(config, "get_setting", return_value=str(tmp_path / "tools")):
             manager = GoManager(config)
 
         # Create go directory but no binary
@@ -295,9 +287,7 @@ class TestInstallFromArchive(FoundationTestCase):
     ) -> None:
         """Test installation fails when verification fails."""
         config = WorkenvConfig()
-        with patch.object(
-            config, "get_setting", return_value=str(tmp_path / "tools")
-        ):
+        with patch.object(config, "get_setting", return_value=str(tmp_path / "tools")):
             manager = GoManager(config)
 
         # Create proper structure
@@ -342,9 +332,7 @@ class TestVerifyInstallation(FoundationTestCase):
         go_root.mkdir(parents=True, exist_ok=True)
 
         # Mock subprocess to return successful version check
-        mock_run.return_value = Mock(
-            returncode=0, stdout="go version go1.22.0 linux/amd64\n", stderr=""
-        )
+        mock_run.return_value = Mock(returncode=0, stdout="go version go1.22.0 linux/amd64\n", stderr="")
 
         result = manager.verify_installation("1.22.0")
 
@@ -353,9 +341,7 @@ class TestVerifyInstallation(FoundationTestCase):
         assert mock_run.call_args.kwargs["env"]["GOROOT"] == str(go_root)
 
     @patch("subprocess.run")
-    def test_verify_installation_version_mismatch(
-        self, mock_run: Mock, tmp_path: Path
-    ) -> None:
+    def test_verify_installation_version_mismatch(self, mock_run: Mock, tmp_path: Path) -> None:
         """Test verification fails on version mismatch."""
         config = WorkenvConfig()
         config.workenv_cache_dir = str(tmp_path / "cache")
@@ -369,9 +355,7 @@ class TestVerifyInstallation(FoundationTestCase):
         go_root.mkdir(parents=True, exist_ok=True)
 
         # Mock subprocess with wrong version
-        mock_run.return_value = Mock(
-            returncode=0, stdout="go version go1.21.0 linux/amd64\n", stderr=""
-        )
+        mock_run.return_value = Mock(returncode=0, stdout="go version go1.21.0 linux/amd64\n", stderr="")
 
         result = manager.verify_installation("1.22.0")
         assert result is False
@@ -386,9 +370,7 @@ class TestVerifyInstallation(FoundationTestCase):
         assert result is False
 
     @patch("subprocess.run", side_effect=Exception("Command failed"))
-    def test_verify_installation_subprocess_error(
-        self, mock_run: Mock, tmp_path: Path
-    ) -> None:
+    def test_verify_installation_subprocess_error(self, mock_run: Mock, tmp_path: Path) -> None:
         """Test verification handles subprocess errors."""
         config = WorkenvConfig()
         config.workenv_cache_dir = str(tmp_path / "cache")

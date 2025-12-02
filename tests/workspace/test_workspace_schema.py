@@ -61,7 +61,7 @@ class TestWorkspaceConfig(FoundationTestCase):
                     template_profile="default",
                     template_version="1.0.0",
                 ),
-            ]
+            ],
         )
 
         outdated = config.get_outdated_repos("2.0.0")

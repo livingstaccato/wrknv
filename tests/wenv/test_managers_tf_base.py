@@ -133,9 +133,7 @@ class TestMetadataMigration(FoundationTestCase):
 
     @patch("pathlib.Path.exists", return_value=True)
     @patch("pathlib.Path.open")
-    def test_migrate_old_active_terraform(
-        self, mock_open: Mock, mock_exists: Mock
-    ) -> None:
+    def test_migrate_old_active_terraform(self, mock_open: Mock, mock_exists: Mock) -> None:
         """Test migration of old active_terraform format."""
         old_metadata = {"active_terraform": "1.5.7"}
 
@@ -274,13 +272,9 @@ class TestActiveVersionManagement(FoundationTestCase):
 
     @patch("pathlib.Path.exists", return_value=True)
     @patch("pathlib.Path.open")
-    def test_get_installed_version_from_workenv(
-        self, mock_open: Mock, mock_exists: Mock
-    ) -> None:
+    def test_get_installed_version_from_workenv(self, mock_open: Mock, mock_exists: Mock) -> None:
         """Test getting installed version from workenv metadata."""
-        test_metadata = {
-            "workenv": {"default": {"terraform_version": "1.6.0"}}
-        }
+        test_metadata = {"workenv": {"default": {"terraform_version": "1.6.0"}}}
 
         mock_file = MagicMock()
         mock_file.__enter__.return_value = mock_file
@@ -295,9 +289,7 @@ class TestActiveVersionManagement(FoundationTestCase):
 
     @patch("pathlib.Path.open")
     @patch.object(ConcreteTfManager, "_update_recent_file_with_active")
-    def test_set_installed_version(
-        self, mock_update_recent: Mock, mock_open: Mock
-    ) -> None:
+    def test_set_installed_version(self, mock_update_recent: Mock, mock_open: Mock) -> None:
         """Test setting installed version."""
         mock_file = MagicMock()
         mock_file.__enter__.return_value = mock_file
@@ -481,9 +473,7 @@ class TestProfileManagement(FoundationTestCase):
 
     @patch("pathlib.Path.exists", return_value=True)
     @patch("pathlib.Path.open")
-    def test_get_current_profile_from_metadata(
-        self, mock_open: Mock, mock_exists: Mock
-    ) -> None:
+    def test_get_current_profile_from_metadata(self, mock_open: Mock, mock_exists: Mock) -> None:
         """Test getting current profile from metadata."""
         test_metadata = {"workenv": {"_current_profile": "staging"}}
 

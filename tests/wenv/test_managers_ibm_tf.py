@@ -68,9 +68,7 @@ class TestGetAvailableVersions(FoundationTestCase):
         assert "1.5.0-rc1" not in versions
 
     @patch("wrknv.wenv.managers.ibm_tf.urlopen")
-    def test_get_available_versions_includes_prereleases(
-        self, mock_urlopen: Mock
-    ) -> None:
+    def test_get_available_versions_includes_prereleases(self, mock_urlopen: Mock) -> None:
         """Test fetching versions including prereleases when configured."""
         mock_response = MagicMock()
         mock_response.read.return_value = json.dumps(
@@ -126,9 +124,7 @@ class TestGetAvailableVersions(FoundationTestCase):
     def test_get_available_versions_custom_mirror(self, mock_urlopen: Mock) -> None:
         """Test using custom mirror URL."""
         mock_response = MagicMock()
-        mock_response.read.return_value = json.dumps(
-            {"versions": {"1.6.0": {"version": "1.6.0"}}}
-        ).encode()
+        mock_response.read.return_value = json.dumps({"versions": {"1.6.0": {"version": "1.6.0"}}}).encode()
         mock_response.__enter__.return_value = mock_response
         mock_urlopen.return_value = mock_response
 
@@ -144,17 +140,11 @@ class TestGetAvailableVersions(FoundationTestCase):
             call_args = mock_urlopen.call_args[0][0]
             assert "mirror.example.com/terraform/index.json" in call_args
 
-    @patch(
-        "wrknv.wenv.managers.ibm_tf.urlopen", side_effect=Exception("Network error")
-    )
-    def test_get_available_versions_network_failure(
-        self, mock_urlopen: Mock
-    ) -> None:
+    @patch("wrknv.wenv.managers.ibm_tf.urlopen", side_effect=Exception("Network error"))
+    def test_get_available_versions_network_failure(self, mock_urlopen: Mock) -> None:
         """Test handling network failures."""
         manager = IbmTfManager()
-        with pytest.raises(
-            ToolManagerError, match="Failed to fetch IBM Terraform versions"
-        ):
+        with pytest.raises(ToolManagerError, match="Failed to fetch IBM Terraform versions"):
             manager.get_available_versions()
 
 
@@ -287,9 +277,7 @@ class TestVerifyInstallation(FoundationTestCase):
         binary_path.parent.mkdir(parents=True, exist_ok=True)
         binary_path.touch()
 
-        mock_run.return_value = Mock(
-            returncode=0, stdout="Terraform v1.6.0\n", stderr=""
-        )
+        mock_run.return_value = Mock(returncode=0, stdout="Terraform v1.6.0\n", stderr="")
 
         result = manager.verify_installation("1.6.0")
 
@@ -305,9 +293,7 @@ class TestVerifyInstallation(FoundationTestCase):
         binary_path.parent.mkdir(parents=True, exist_ok=True)
         binary_path.touch()
 
-        mock_run.return_value = Mock(
-            returncode=0, stdout="Terraform v1.5.0\n", stderr=""
-        )
+        mock_run.return_value = Mock(returncode=0, stdout="Terraform v1.5.0\n", stderr="")
 
         result = manager.verify_installation("1.6.0")
         assert result is False
@@ -407,9 +393,7 @@ class TestHarnessCompatibility(FoundationTestCase):
         # 1.4, 1.8 should be incompatible
         for version in ["1.4.0", "1.8.0"]:
             result = manager._check_wire_compatibility(version)
-            assert (
-                result["compatible"] is False
-            ), f"Version {version} should be incompatible"
+            assert result["compatible"] is False, f"Version {version} should be incompatible"
 
     def test_check_conformance_compatibility(self) -> None:
         """Test conformance testing compatibility check."""
