@@ -41,7 +41,6 @@ def gitignore_templates_dir(tmp_path):
     return tmp_path
 
 
-@pytest.mark.skip(reason="Click+xdist incompatibility - run without xdist")
 class TestGitignoreCommands(FoundationTestCase):
     def test_gitignore_build_from_config(self, cli, runner, tmp_path, gitignore_templates_dir) -> None:
         """Test building .gitignore from wrknv.toml config."""
