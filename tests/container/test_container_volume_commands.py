@@ -379,13 +379,13 @@ class TestVolumeCommandsCLI:
 
         assert result.exit_code == 0
 
-    @pytest.mark.skip(reason="Duplicate --backup-path parameter in CLI definition")
     def test_cli_volumes_restore_with_path(self, runner, mock_load_config, mock_container_manager) -> None:
         """Test CLI volumes restore command with path."""
         cli = create_cli()
 
         backup_path = "/path/to/backup.tar.gz"
-        result = runner.invoke(cli, ["container", "volumes", "restore", "--backup", backup_path])
+        # backup_path is a positional argument, not an option
+        result = runner.invoke(cli, ["container", "volumes", "restore", backup_path])
 
         assert result.exit_code == 0
 
