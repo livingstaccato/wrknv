@@ -104,11 +104,8 @@ templates = ["Python", "Node"]
                 assert "# === Node ===" in content
                 assert "node_modules/" in content
 
-    def test_gitignore_build_with_templates_option(
-        self, cli, runner, tmp_path, gitignore_templates_dir
-    ) -> None:
+    def test_gitignore_build_with_templates_option(self, cli, runner, mock_template_handler) -> None:
         """Test building .gitignore using --templates option (should override config)."""
-
         with runner.isolated_filesystem():
             test_dir = Path.cwd()
 
@@ -116,168 +113,138 @@ templates = ["Python", "Node"]
             (test_dir / "Python.gitignore").write_text("# Python ignores\n*.pyc\n__pycache__/")
             (test_dir / "Node.gitignore").write_text("# Node ignores\nnode_modules/\nnpm-debug.log")
             (test_dir / "Global.gitignore").write_text("# Global ignores\n.DS_Store\n.env")
-            (test_dir / "NonExistent.gitignore").write_text("# This file should not be used")
 
-            # Create a dummy wrknv.toml (with different templates)
+            # Create wrknv.toml
             config_path = test_dir / "wrknv.toml"
-            config_content_template = """
+            config_path.write_text("""
 project_name = "test-project"
 version = "0.1.0"
 
 [gitignore]
 templates = ["Python", "Node"]
-templates_path = "{templates_path_actual}"
-"""
-            config_content = config_content_template.format(templates_path_actual=test_dir)
-            config_path.write_text(config_content)
+""")
 
-            # Create a pre-configured WorkenvConfig instance
             from wrknv.config import WorkenvConfig
 
-            # Load config from the file
             with patch("wrknv.config.WorkenvConfig._find_config_file", return_value=config_path):
                 mock_config_instance = WorkenvConfig.load()
 
-            # Patch WorkenvConfig in cli.py to return our pre-configured instance
-            with patch("wrknv.cli.hub_cli.WrknvContext.get_config", return_value=mock_config_instance):
-                # Use shared cli fixture - templates parameter accepts space-separated values
+            mock_handler = mock_template_handler(test_dir)
+
+            with (
+                patch("wrknv.cli.hub_cli.WrknvContext.get_config", return_value=mock_config_instance),
+                patch("wrknv.gitignore.manager.TemplateHandler", return_value=mock_handler),
+            ):
+                # templates parameter accepts space-separated values
                 result = runner.invoke(
                     cli,
-                    ["gitignore", "build", "Global Python"],
+                    ["gitignore", "build", "Global", "Python"],
                     catch_exceptions=False,
                 )
 
                 assert result.exit_code == 0
 
-                # The file is created in the current directory
                 gitignore_file = test_dir / ".gitignore"
                 assert gitignore_file.exists()
 
                 content = gitignore_file.read_text()
-                # GitignoreManager uses === format, not --- format
-                assert "# === Global ===" in content or "Global" in content
+                assert "# === Global ===" in content
                 assert ".DS_Store" in content
                 assert ".env" in content
-                assert "# === Python ===" in content or "Python" in content
-                assert "*.pyc" in content or "__pycache__" in content
+                assert "# === Python ===" in content
+                assert "*.pyc" in content
                 assert "node_modules/" not in content  # Should not include Node.gitignore
 
     def test_gitignore_build_no_templates_specified(self, cli, runner, tmp_path) -> None:
         """Test building .gitignore when no templates are specified in config or via option."""
-        # Create a dummy wrknv.toml without gitignore section
         config_path = tmp_path / "wrknv.toml"
-        config_content = """
+        config_path.write_text("""
 project_name = "test-project"
 version = "0.1.0"
-"""
-        config_path.write_text(config_content)
+""")
 
-        # Create a pre-configured WorkenvConfig instance
         from wrknv.config import WorkenvConfig
 
-        # Load config from the file
         with patch("wrknv.config.WorkenvConfig._find_config_file", return_value=config_path):
             mock_config_instance = WorkenvConfig.load()
 
-        # Patch WorkenvConfig in cli.py to return our pre-configured instance
         with (
             patch("wrknv.cli.hub_cli.WrknvContext.get_config", return_value=mock_config_instance),
             runner.isolated_filesystem(tmp_path),
         ):
-            # Use shared cli fixture
             result = runner.invoke(cli, ["gitignore", "build"], catch_exceptions=False)
 
             assert result.exit_code == 0
             assert "No gitignore templates specified in config or via --templates." in result.output
             assert not (tmp_path / ".gitignore").exists()
 
-    def test_gitignore_build_with_non_existent_template(
-        self, cli, runner, tmp_path, gitignore_templates_dir, capsys
-    ) -> None:
+    def test_gitignore_build_with_non_existent_template(self, cli, runner, mock_template_handler) -> None:
         """Test building .gitignore with a non-existent template."""
-
         with runner.isolated_filesystem():
             test_dir = Path.cwd()
 
-            # Create dummy template files
+            # Create only Python template (NonExistent doesn't exist)
             (test_dir / "Python.gitignore").write_text("# Python ignores\n*.pyc\n__pycache__/")
-            (test_dir / "Node.gitignore").write_text("# Node ignores\nnode_modules/\nnpm-debug.log")
-            (test_dir / "Global.gitignore").write_text("# Global ignores\n.DS_Store\n.env")
-            (test_dir / "NonExistent.gitignore").write_text("# This file should not be used")
 
             config_path = test_dir / "wrknv.toml"
-            config_content_template = """
+            config_path.write_text("""
 project_name = "test-project"
 version = "0.1.0"
 
 [gitignore]
 templates = ["Python", "NonExistent"]
-templates_path = "{templates_path_actual}"
-"""
-            config_content = config_content_template.format(templates_path_actual=test_dir)
-            config_path.write_text(config_content)
+""")
 
-            # Create a pre-configured WorkenvConfig instance
             from wrknv.config import WorkenvConfig
 
-            # Load config from the file
             with patch("wrknv.config.WorkenvConfig._find_config_file", return_value=config_path):
                 mock_config_instance = WorkenvConfig.load()
 
-            # Patch WorkenvConfig in cli.py to return our pre-configured instance
-            with patch("wrknv.cli.hub_cli.WrknvContext.get_config", return_value=mock_config_instance):
-                # Use shared cli fixture
+            mock_handler = mock_template_handler(test_dir)
+
+            with (
+                patch("wrknv.cli.hub_cli.WrknvContext.get_config", return_value=mock_config_instance),
+                patch("wrknv.gitignore.manager.TemplateHandler", return_value=mock_handler),
+            ):
                 result = runner.invoke(cli, ["gitignore", "build"], catch_exceptions=False)
 
                 assert result.exit_code == 0
-                # Warning may be in result.output or just logged, not necessarily in stderr
-                # The important thing is that the build succeeds despite the missing template
 
                 gitignore_file = test_dir / ".gitignore"
                 assert gitignore_file.exists()
                 content = gitignore_file.read_text()
                 assert "# === Python ===" in content
-                assert "# === NonExistent ===" not in content  # Should not include header for non-existent
-                assert "NonExistent" not in content  # Template shouldn't appear at all
+                assert "# === NonExistent ===" not in content
 
-    def test_gitignore_build_with_output_option(
-        self, cli, runner, tmp_path, gitignore_templates_dir, capsys
-    ) -> None:
+    def test_gitignore_build_with_output_option(self, cli, runner, mock_template_handler) -> None:
         """Test building .gitignore to a custom output path."""
-
         with runner.isolated_filesystem():
             test_dir = Path.cwd()
 
-            # Create dummy template files
             (test_dir / "Python.gitignore").write_text("# Python ignores\n*.pyc\n__pycache__/")
-            (test_dir / "Node.gitignore").write_text("# Node ignores\nnode_modules/\nnpm-debug.log")
-            (test_dir / "Global.gitignore").write_text("# Global ignores\n.DS_Store\n.env")
-            (test_dir / "NonExistent.gitignore").write_text("# This file should not be used")
 
             config_path = test_dir / "wrknv.toml"
-            config_content_template = """
+            config_path.write_text("""
 project_name = "test-project"
 version = "0.1.0"
 
 [gitignore]
 templates = ["Python"]
-templates_path = "{templates_path_actual}"
-"""
-            config_content = config_content_template.format(templates_path_actual=test_dir)
-            config_path.write_text(config_content)
+""")
 
-            # Create a pre-configured WorkenvConfig instance
             from wrknv.config import WorkenvConfig
 
-            # Load config from the file
             with patch("wrknv.config.WorkenvConfig._find_config_file", return_value=config_path):
                 mock_config_instance = WorkenvConfig.load()
 
-            # Patch WorkenvConfig in cli.py to return our pre-configured instance
-            with patch("wrknv.cli.hub_cli.WrknvContext.get_config", return_value=mock_config_instance):
+            mock_handler = mock_template_handler(test_dir)
+
+            with (
+                patch("wrknv.cli.hub_cli.WrknvContext.get_config", return_value=mock_config_instance),
+                patch("wrknv.gitignore.manager.TemplateHandler", return_value=mock_handler),
+            ):
                 custom_output_path = test_dir / "my_custom.ignore"
 
-                # Use shared cli fixture
                 result = runner.invoke(
                     cli, ["gitignore", "build", "--output", str(custom_output_path)], catch_exceptions=False
                 )
@@ -287,8 +254,8 @@ templates_path = "{templates_path_actual}"
                 assert custom_output_path.exists()
                 content = custom_output_path.read_text()
                 assert "# === Python ===" in content
-                assert "*.pyc" in content or "*.py[cod" in content  # May use expanded pattern
-                assert not (test_dir / ".gitignore").exists()  # Default file should not be created
+                assert "*.pyc" in content
+                assert not (test_dir / ".gitignore").exists()
 
 
 # 🧰🌍🔚
