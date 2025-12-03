@@ -22,7 +22,6 @@ def setup_wrknv_logging() -> None:
     """
     # Note: Emoji hierarchy registration disabled - module not available
     # register_emoji_hierarchy("wrknv", WRKNV_EMOJI_HIERARCHY)
-    pass
 
 
 def setup_wrknv_config_logging() -> None:
@@ -34,7 +33,6 @@ def setup_wrknv_config_logging() -> None:
     """
     # Note: Emoji hierarchy registration disabled - module not available
     # register_emoji_hierarchy("wrknv", WRKNV_EMOJI_HIERARCHY)
-    pass
 
 
 # 🧰🌍🔚

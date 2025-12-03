@@ -47,8 +47,6 @@ class ConfigurationError(WrkenvError):
 class ValidationError(ConfigurationError):
     """Configuration validation errors."""
 
-    pass
-
 
 class ProfileError(WrkenvError):
     """Profile-related errors."""
@@ -181,8 +179,6 @@ class ContainerError(WrkenvError):
 
 class PackageError(WrkenvError):
     """Package building or verification errors."""
-
-    pass
 
 
 # 🧰🌍🔚

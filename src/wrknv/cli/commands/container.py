@@ -44,7 +44,6 @@ except ImportError:
 @register_command("container", group=True, description="Docker container management")
 def container_group() -> None:
     """Docker container management commands."""
-    pass
 
 
 @register_command(
@@ -244,7 +243,6 @@ def container_rebuild_command() -> None:
 )
 def container_volumes_group() -> None:
     """Container volume management commands."""
-    pass
 
 
 @register_command(

@@ -23,7 +23,6 @@ from wrknv.gitignore import GitignoreManager, ProjectDetector
 @register_command("gitignore", group=True, description="Manage .gitignore files")
 def gitignore_group() -> None:
     """Commands for managing .gitignore files."""
-    pass
 
 
 @register_command(

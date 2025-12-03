@@ -29,8 +29,6 @@ logger = get_logger(__name__)
 class WorkenvConfigError(Exception):
     """Raised when there's an error in workenv configuration."""
 
-    pass
-
 
 @define
 class WorkenvToolConfig:

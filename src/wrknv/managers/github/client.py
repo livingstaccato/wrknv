@@ -278,7 +278,6 @@ class GitHubReleasesClient:
     async def close(self) -> None:
         """Close the client and cleanup resources."""
         # UniversalClient will cleanup in __aexit__
-        pass
 
     async def __aenter__(self) -> GitHubReleasesClient:
         """Context manager entry."""

@@ -51,7 +51,6 @@ class ContainerRuntime(ABC):
         Returns:
             CompletedProcess with container ID in stdout
         """
-        pass
 
     @abstractmethod
     def start_container(self, name: str) -> CompletedProcess:
@@ -63,7 +62,6 @@ class ContainerRuntime(ABC):
         Returns:
             CompletedProcess
         """
-        pass
 
     @abstractmethod
     def stop_container(self, name: str, timeout: int = 10) -> CompletedProcess:
@@ -76,7 +74,6 @@ class ContainerRuntime(ABC):
         Returns:
             CompletedProcess
         """
-        pass
 
     @abstractmethod
     def remove_container(self, name: str, force: bool = False) -> CompletedProcess:
@@ -89,7 +86,6 @@ class ContainerRuntime(ABC):
         Returns:
             CompletedProcess
         """
-        pass
 
     @abstractmethod
     def exec_in_container(
@@ -116,7 +112,6 @@ class ContainerRuntime(ABC):
         Returns:
             CompletedProcess with command output
         """
-        pass
 
     @abstractmethod
     def container_exists(self, name: str) -> bool:
@@ -128,7 +123,6 @@ class ContainerRuntime(ABC):
         Returns:
             True if container exists
         """
-        pass
 
     @abstractmethod
     def container_running(self, name: str) -> bool:
@@ -140,7 +134,6 @@ class ContainerRuntime(ABC):
         Returns:
             True if container is running
         """
-        pass
 
     @abstractmethod
     def get_container_logs(
@@ -161,7 +154,6 @@ class ContainerRuntime(ABC):
         Returns:
             CompletedProcess with logs in stdout
         """
-        pass
 
     @abstractmethod
     def build_image(
@@ -184,7 +176,6 @@ class ContainerRuntime(ABC):
         Returns:
             CompletedProcess
         """
-        pass
 
     @abstractmethod
     def list_containers(self, all: bool = False) -> list[dict[str, Any]]:
@@ -196,7 +187,6 @@ class ContainerRuntime(ABC):
         Returns:
             List of container information dicts
         """
-        pass
 
     @abstractmethod
     def inspect_container(self, name: str) -> dict[str, Any]:
@@ -208,7 +198,6 @@ class ContainerRuntime(ABC):
         Returns:
             Container inspection data
         """
-        pass
 
     @abstractmethod
     def is_available(self) -> bool:
@@ -217,7 +206,6 @@ class ContainerRuntime(ABC):
         Returns:
             True if runtime is available and functional
         """
-        pass
 
 
 # 🧰🌍🔚

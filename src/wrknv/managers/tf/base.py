@@ -64,7 +64,6 @@ class TfManager(BaseToolManager):
     @abstractmethod
     def tool_prefix(self) -> str:
         """Prefix for version files (e.g., 'terraform' or 'opentofu')."""
-        pass
 
     def _save_metadata(self) -> None:
         """Save metadata to JSON file."""

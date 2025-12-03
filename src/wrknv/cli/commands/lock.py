@@ -22,7 +22,6 @@ from wrknv.lockfile import LockfileManager
 @register_command("lock", group=True, description="Manage version lockfiles")
 def lock_group() -> None:
     """Commands for managing lockfiles."""
-    pass
 
 
 @register_command("lock.generate", description="Generate lockfile from current configuration")

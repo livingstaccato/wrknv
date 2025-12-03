@@ -24,7 +24,6 @@ from wrknv.managers.factory import get_tool_manager
 @register_command("profile", group=True, description="Manage tool version profiles")
 def profile_group() -> None:
     """Commands for managing profiles."""
-    pass
 
 
 @register_command(

@@ -25,7 +25,6 @@ from wrknv.errors import ProfileError
 @register_command("config", group=True, description="Configuration management")
 def config_group() -> None:
     """Configuration management commands."""
-    pass
 
 
 @register_command(

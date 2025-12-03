@@ -22,7 +22,6 @@ from wrknv.workspace.orchestrator import WorkspaceOrchestrator
 @register_command("workspace", group=True, description="Manage multi-repo workspaces")
 def workspace_group() -> None:
     """Commands for managing workspaces."""
-    pass
 
 
 @register_command("workspace.init", description="Initialize workspace in current directory")

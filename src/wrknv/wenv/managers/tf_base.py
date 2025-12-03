@@ -33,7 +33,7 @@ class TfVersionsManager(BaseToolManager):
     for advanced features. Supports both IBM Terraform (formerly HashiCorp) and OpenTofu.
     """
 
-    def __init__(self, config=None) -> None:  # noqa: ANN001
+    def __init__(self, config=None) -> None:
         super().__init__(config)
         # Override install path to use tf versions directory
         self.install_path = pathlib.Path("~/.terraform.versions").expanduser()
@@ -50,7 +50,6 @@ class TfVersionsManager(BaseToolManager):
     @abstractmethod
     def tool_prefix(self) -> str:
         """Prefix for version files (e.g., 'terraform' or 'opentofu')."""
-        pass
 
     def _load_metadata(self) -> None:
         """Load metadata from JSON file."""

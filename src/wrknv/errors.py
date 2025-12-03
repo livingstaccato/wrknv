@@ -62,8 +62,6 @@ class ConfigurationError(WrkenvError):
 class ValidationError(ConfigurationError):
     """Configuration validation errors."""
 
-    pass
-
 
 # Profile Errors
 # ==============

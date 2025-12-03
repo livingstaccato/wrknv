@@ -54,7 +54,6 @@ class SubRosaManager(BaseToolManager):
     @abstractmethod
     def variant_name(self) -> str:
         """Variant name (e.g., 'bao' or 'vault')."""
-        pass
 
     @property
     def tool_name(self) -> str:

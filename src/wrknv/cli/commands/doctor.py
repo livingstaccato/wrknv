@@ -24,7 +24,6 @@ from wrknv.cli.hub_cli import WrknvContext
 @register_command("selftest", group=True, description="Self-test and validate wrknv system")
 def selftest_group() -> None:
     """Self-test and validation commands."""
-    pass
 
 
 @register_command("selftest.check", description="Comprehensive health check of wrknv")

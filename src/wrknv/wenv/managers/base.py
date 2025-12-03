@@ -23,8 +23,6 @@ from wrknv.config import WorkenvConfig, WorkenvConfigError
 class ToolManagerError(Exception):
     """Raised when there's an error in tool management."""
 
-    pass
-
 
 class BaseToolManager(ABC):
     """Base class for all tool managers in wrknv."""
@@ -44,28 +42,23 @@ class BaseToolManager(ABC):
     @abstractmethod
     def tool_name(self) -> str:
         """Name of the tool being managed."""
-        pass
 
     @property
     @abstractmethod
     def executable_name(self) -> str:
         """Name of the executable binary."""
-        pass
 
     @abstractmethod
     def get_available_versions(self) -> list[str]:
         """Get list of available versions from upstream."""
-        pass
 
     @abstractmethod
     def get_download_url(self, version: str) -> str:
         """Get download URL for a specific version."""
-        pass
 
     @abstractmethod
     def get_checksum_url(self, version: str) -> str | None:
         """Get checksum URL for verification (if available)."""
-        pass
 
     def get_platform_info(self) -> dict[str, str]:
         """Get current platform information."""
@@ -237,7 +230,6 @@ class BaseToolManager(ABC):
     @abstractmethod
     def _install_from_archive(self, archive_path: pathlib.Path, version: str) -> None:
         """Install tool from downloaded archive. Tool-specific implementation."""
-        pass
 
     def _cleanup_failed_installation(self, version: str) -> None:
         """Clean up failed installation."""
