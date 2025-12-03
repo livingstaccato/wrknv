@@ -138,7 +138,7 @@ templates = ["Python", "Node"]
                 # templates parameter accepts space-separated values
                 result = runner.invoke(
                     cli,
-                    ["gitignore", "build", "Global", "Python"],
+                    ["gitignore", "build", "Global Python"],
                     catch_exceptions=False,
                 )
 
