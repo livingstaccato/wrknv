@@ -13,16 +13,14 @@ from provide.testkit import FoundationTestCase
 from wrknv.cli.hub_cli import create_cli
 from wrknv.lockfile import ResolvedTool
 
-# Module-level shared CLI instance
-_test_cli = None
-
 
 def get_test_cli():
-    """Get or create the test CLI instance."""
-    global _test_cli
-    if _test_cli is None:
-        _test_cli = create_cli()
-    return _test_cli
+    """Create a fresh test CLI instance.
+
+    Always creates new instance to avoid race conditions with pytest-xdist.
+    Module reloading in create_cli() invalidates patches if instances are cached.
+    """
+    return create_cli()
 
 
 class TestLockGenerateCommand(FoundationTestCase):
