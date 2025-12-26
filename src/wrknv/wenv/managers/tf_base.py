@@ -17,11 +17,15 @@ import os
 import pathlib
 import shutil
 import sys
+from typing import TYPE_CHECKING
 
 from provide.foundation import logger
 import semver
 
 from .base import BaseToolManager, ToolManagerError
+
+if TYPE_CHECKING:
+    from wrknv.config import WorkenvConfig
 
 
 class TfVersionsManager(BaseToolManager):
@@ -33,7 +37,7 @@ class TfVersionsManager(BaseToolManager):
     for advanced features. Supports both IBM Terraform (formerly HashiCorp) and OpenTofu.
     """
 
-    def __init__(self, config=None) -> None:
+    def __init__(self, config: WorkenvConfig | None = None) -> None:
         super().__init__(config)
         # Override install path to use tf versions directory
         self.install_path = pathlib.Path("~/.terraform.versions").expanduser()
