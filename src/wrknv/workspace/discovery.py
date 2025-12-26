@@ -219,7 +219,7 @@ class WorkspaceDiscovery:
         """Get summary of workspace state."""
         repos = self.discover_repos()
 
-        type_counts = {}
+        type_counts: dict[str, int] = {}
         for repo in repos:
             repo_type = repo.detected_type or "unknown"
             type_counts[repo_type] = type_counts.get(repo_type, 0) + 1

@@ -74,7 +74,7 @@ class FileConfigSource(ConfigSource):
 
         # Then try navigating from root
         parts = key.split(".")
-        current = self._data
+        current: Any = self._data
         for part in parts:
             if isinstance(current, dict):
                 current = current.get(part)
