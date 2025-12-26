@@ -1,0 +1,244 @@
+# --- Sibling Packages ---
+print_header "🤝 Installing Sibling Packages"
+
+PARENT_DIR=$(dirname "$(pwd)")
+SIBLING_COUNT=0
+
+{% if siblings %}
+# New unified siblings configuration
+{% for sibling in siblings %}
+{% if sibling is string %}
+# Simple string pattern
+for dir in "${PARENT_DIR}"/{{ sibling }}; do
+    if [ -d "${dir}" ]; then
+        SIBLING_NAME=$(basename "${dir}")
+        echo -n "Installing ${SIBLING_NAME} with dependencies..."
+        {% if use_spinner %}
+        uv pip install -e "${dir}" > /tmp/{{ project_name }}_setup/${SIBLING_NAME}.log 2>&1 &
+        INSTALL_PID=$!
+        spinner $INSTALL_PID
+        wait $INSTALL_PID
+        if [ $? -ne 0 ]; then
+            echo -n " Retrying with local version only..."
+            uv pip install --force-reinstall --no-deps -e "${dir}" > /tmp/{{ project_name }}_setup/${SIBLING_NAME}_local.log 2>&1 &
+            INSTALL_PID=$!
+            spinner $INSTALL_PID
+            wait $INSTALL_PID
+            if [ $? -eq 0 ]; then
+                print_success "${SIBLING_NAME} installed (local, no deps)"
+                print_warning "Some dependencies may be missing - check /tmp/{{ project_name }}_setup/${SIBLING_NAME}.log"
+            else
+                print_error "${SIBLING_NAME} installation failed"
+            fi
+        else
+            print_success "${SIBLING_NAME} installed"
+        fi
+        {% else %}
+        if ! uv pip install -e "${dir}"; then
+            echo " Retrying with local version only..."
+            if uv pip install --force-reinstall --no-deps -e "${dir}"; then
+                print_success "${SIBLING_NAME} installed (local, no deps)"
+                print_warning "Some dependencies may be missing"
+            else
+                print_error "${SIBLING_NAME} installation failed"
+            fi
+        else
+            print_success "${SIBLING_NAME} installed"
+        fi
+        {% endif %}
+        ((SIBLING_COUNT++))
+    fi
+done
+{% else %}
+# Sibling with configuration
+{% if sibling.pattern is defined %}
+# Pattern-based sibling
+for dir in "${PARENT_DIR}"/{{ sibling.pattern }}; do
+    if [ -d "${dir}" ]; then
+        SIBLING_NAME=$(basename "${dir}")
+        echo -n "Installing ${SIBLING_NAME}{{ ' with dependencies' if sibling.with_deps|default(true) else ' without dependencies' }}..."
+        {% if use_spinner %}
+        # If with_deps is true, first try normal install, then fallback to local-only
+        {% if sibling.with_deps|default(true) %}
+        uv pip install -e "${dir}" > /tmp/{{ project_name }}_setup/${SIBLING_NAME}.log 2>&1 &
+        INSTALL_PID=$!
+        spinner $INSTALL_PID
+        wait $INSTALL_PID
+        if [ $? -ne 0 ]; then
+            echo -n " Retrying with local version only..."
+            uv pip install --force-reinstall --no-deps -e "${dir}" > /tmp/{{ project_name }}_setup/${SIBLING_NAME}_local.log 2>&1 &
+            INSTALL_PID=$!
+            spinner $INSTALL_PID
+            wait $INSTALL_PID
+            if [ $? -eq 0 ]; then
+                print_success "${SIBLING_NAME} installed (local, no deps)"
+                print_warning "Some dependencies may be missing - check /tmp/{{ project_name }}_setup/${SIBLING_NAME}.log"
+            else
+                print_error "${SIBLING_NAME} installation failed"
+            fi
+        else
+            print_success "${SIBLING_NAME} installed"
+        fi
+        {% else %}
+        uv pip install --force-reinstall --no-deps -e "${dir}" > /tmp/{{ project_name }}_setup/${SIBLING_NAME}.log 2>&1 &
+        INSTALL_PID=$!
+        spinner $INSTALL_PID
+        wait $INSTALL_PID
+        if [ $? -eq 0 ]; then
+            print_success "${SIBLING_NAME} installed (no deps)"
+        else
+            print_error "${SIBLING_NAME} installation failed"
+        fi
+        {% endif %}
+        {% else %}
+        {% if sibling.with_deps|default(true) %}
+        if ! uv pip install -e "${dir}"; then
+            echo " Retrying with local version only..."
+            if uv pip install --force-reinstall --no-deps -e "${dir}"; then
+                print_success "${SIBLING_NAME} installed (local, no deps)"
+                print_warning "Some dependencies may be missing"
+            else
+                print_error "${SIBLING_NAME} installation failed"
+            fi
+        else
+            print_success "${SIBLING_NAME} installed"
+        fi
+        {% else %}
+        if uv pip install --force-reinstall --no-deps -e "${dir}"; then
+            print_success "${SIBLING_NAME} installed (no deps)"
+        else
+            print_error "${SIBLING_NAME} installation failed"
+        fi
+        {% endif %}
+        {% endif %}
+        ((SIBLING_COUNT++))
+    fi
+done
+{% else %}
+# Explicit sibling
+{% set var_name = sibling.var_name|default(sibling.name.replace('-', '_')) %}
+{{ var_name }}_DIR="${PARENT_DIR}/{{ sibling.name }}"
+if [ -d "{% raw %}${{% endraw %}{{ var_name|upper }}_DIR{% raw %}}{% endraw %}" ]; then
+    echo -n "Installing {{ sibling.name }}{{ ' with dependencies' if sibling.with_deps|default(true) else ' without dependencies' }}..."
+    {% if use_spinner %}
+    {% if sibling.with_deps|default(true) %}
+    uv pip install -e "{% raw %}${{% endraw %}{{ var_name|upper }}_DIR{% raw %}}{% endraw %}" > /tmp/{{ project_name }}_setup/{{ sibling.name }}.log 2>&1 &
+    INSTALL_PID=$!
+    spinner $INSTALL_PID
+    wait $INSTALL_PID
+    if [ $? -ne 0 ]; then
+        echo -n " Retrying with local version only..."
+        uv pip install --force-reinstall --no-deps -e "{% raw %}${{% endraw %}{{ var_name|upper }}_DIR{% raw %}}{% endraw %}" > /tmp/{{ project_name }}_setup/{{ sibling.name }}_local.log 2>&1 &
+        INSTALL_PID=$!
+        spinner $INSTALL_PID
+        wait $INSTALL_PID
+        if [ $? -eq 0 ]; then
+            print_success "{{ sibling.name }} installed (local, no deps)"
+            print_warning "Some dependencies may be missing - check /tmp/{{ project_name }}_setup/{{ sibling.name }}.log"
+        else
+            print_error "{{ sibling.name }} installation failed"
+        fi
+    else
+        print_success "{{ sibling.name }} installed"
+    fi
+    {% else %}
+    uv pip install --force-reinstall --no-deps -e "{% raw %}${{% endraw %}{{ var_name|upper }}_DIR{% raw %}}{% endraw %}" > /tmp/{{ project_name }}_setup/{{ sibling.name }}.log 2>&1 &
+    INSTALL_PID=$!
+    spinner $INSTALL_PID
+    wait $INSTALL_PID
+    if [ $? -eq 0 ]; then
+        print_success "{{ sibling.name }} installed (no deps)"
+    else
+        print_error "{{ sibling.name }} installation failed"
+    fi
+    {% endif %}
+    {% else %}
+    {% if sibling.with_deps|default(true) %}
+    if ! uv pip install -e "{% raw %}${{% endraw %}{{ var_name|upper }}_DIR{% raw %}}{% endraw %}"; then
+        echo " Retrying with local version only..."
+        if uv pip install --force-reinstall --no-deps -e "{% raw %}${{% endraw %}{{ var_name|upper }}_DIR{% raw %}}{% endraw %}"; then
+            print_success "{{ sibling.name }} installed (local, no deps)"
+            print_warning "Some dependencies may be missing"
+        else
+            print_error "{{ sibling.name }} installation failed"
+        fi
+    else
+        print_success "{{ sibling.name }} installed"
+    fi
+    {% else %}
+    if uv pip install --force-reinstall --no-deps -e "{% raw %}${{% endraw %}{{ var_name|upper }}_DIR{% raw %}}{% endraw %}"; then
+        print_success "{{ sibling.name }} installed (no deps)"
+    else
+        print_error "{{ sibling.name }} installation failed"
+    fi
+    {% endif %}
+    {% endif %}
+    ((SIBLING_COUNT++))
+fi
+{% endif %}
+{% endif %}
+{% endfor %}
+
+{% elif sibling_patterns or special_siblings %}
+# Legacy format for backward compatibility
+{% for sibling_pattern in sibling_patterns %}
+for dir in "${PARENT_DIR}"/{{ sibling_pattern }}; do
+    if [ -d "${dir}" ]; then
+        SIBLING_NAME=$(basename "${dir}")
+        echo -n "Installing ${SIBLING_NAME}..."
+        {% if use_spinner %}
+        uv pip install --force-reinstall --no-deps -e "${dir}" > /tmp/{{ project_name }}_setup/${SIBLING_NAME}.log 2>&1 &
+        INSTALL_PID=$!
+        spinner $INSTALL_PID
+        wait $INSTALL_PID
+        if [ $? -eq 0 ]; then
+            print_success "${SIBLING_NAME} installed (local)"
+        else
+            print_error "${SIBLING_NAME} installation failed"
+        fi
+        {% else %}
+        if uv pip install --force-reinstall --no-deps -e "${dir}"; then
+            print_success "${SIBLING_NAME} installed (local)"
+        else
+            print_error "${SIBLING_NAME} installation failed"
+        fi
+        {% endif %}
+        ((SIBLING_COUNT++))
+    fi
+done
+{% endfor %}
+
+{% if special_siblings %}
+# Special handling for specific packages
+{% for special in special_siblings %}
+{{ special.var_name }}_DIR="${PARENT_DIR}/{{ special.name }}"
+if [ -d "{% raw %}${{% endraw %}{{ special.var_name|upper }}_DIR{% raw %}}{% endraw %}" ]; then
+    echo -n "Installing {{ special.name }}{{ ' with dependencies' if special.with_deps else '' }}..."
+    {% if special.with_deps %}
+    if ! uv pip install -e "{% raw %}${{% endraw %}{{ special.var_name|upper }}_DIR{% raw %}}{% endraw %}"; then
+        echo " Retrying with local version only..."
+        if uv pip install --force-reinstall --no-deps -e "{% raw %}${{% endraw %}{{ special.var_name|upper }}_DIR{% raw %}}{% endraw %}"; then
+            print_success "{{ special.name }} installed (local, no deps)"
+            print_warning "Some dependencies may be missing"
+        else
+            print_error "{{ special.name }} installation failed"
+        fi
+    else
+        print_success "{{ special.name }} installed"
+    fi
+    {% else %}
+    if ! uv pip install --force-reinstall --no-deps -e "{% raw %}${{% endraw %}{{ special.var_name|upper }}_DIR{% raw %}}{% endraw %}"; then
+        print_error "Failed to install {{ special.name }}"
+    else
+        print_success "{{ special.name }} installed (no deps)"
+    fi
+    {% endif %}
+    ((SIBLING_COUNT++))
+fi
+{% endfor %}
+{% endif %}
+{% endif %}
+
+if [ $SIBLING_COUNT -eq 0 ]; then
+    print_warning "No sibling packages found"
+fi

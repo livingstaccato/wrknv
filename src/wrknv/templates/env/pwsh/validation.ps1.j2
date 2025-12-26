@@ -1,0 +1,13 @@
+# --- Project Validation ---
+if (-not (Test-Path "pyproject.toml")) {
+    Write-Error "No 'pyproject.toml' found in current directory"
+    Write-Host "Please run this script from the {{ project_name }} root directory"
+    exit 1
+}
+
+$ProjectName = Split-Path -Leaf (Get-Location)
+{% if strict_project_check %}
+if ($ProjectName -ne "{{ project_name }}") {
+    Write-Warning "This script is optimized for {{ project_name }} but running in '$ProjectName'"
+}
+{% endif %}

@@ -1,0 +1,15 @@
+print_header() {
+    echo -e "\n${COLOR_BLUE}--- ${1} ---${COLOR_NC}"
+}
+
+print_success() {
+    echo -e "${COLOR_GREEN}✅ ${1}${COLOR_NC}"
+}
+
+print_error() {
+    echo -e "${COLOR_RED}❌ ${1}${COLOR_NC}"
+}
+
+print_warning() {
+    echo -e "${COLOR_YELLOW}⚠️  ${1}${COLOR_NC}"
+}

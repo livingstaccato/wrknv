@@ -1,0 +1,28 @@
+# --- Virtual Environment ---
+print_header "🐍 Setting Up Virtual Environment"
+echo "Directory: ${VENV_DIR}"
+
+if [ -d "${VENV_DIR}" ] && [ -f "${VENV_DIR}/bin/activate" ] && [ -f "${VENV_DIR}/bin/python" ] && [ "${RECREATE_VENV}" != "true" ]; then
+    print_success "Virtual environment exists"
+else
+    if [ "${RECREATE_VENV}" = "true" ]; then
+        echo -n "Recreating virtual environment with correct Python version..."
+    else
+        echo -n "Creating virtual environment..."
+    fi
+    {% if use_spinner %}
+    uv venv "${VENV_DIR}" > /tmp/uv_venv.log 2>&1 &
+    spinner $!
+    {% else %}
+    uv venv "${VENV_DIR}"
+    {% endif %}
+    print_success "Virtual environment created"
+    
+    # Save Python version for future checks
+    ${VENV_DIR}/bin/python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}')" > "${VENV_DIR}/.python-version"
+fi
+
+# Activate virtual environment
+source "${VENV_DIR}/bin/activate"
+export VIRTUAL_ENV="$(pwd)/${VENV_DIR}"
+export UV_PROJECT_ENVIRONMENT="${VENV_DIR}"

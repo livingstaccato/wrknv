@@ -1,0 +1,18 @@
+# --- Final Summary ---
+print_header "✅ Environment Ready!"
+
+echo -e "\n${COLOR_GREEN}{{ project_name }} development environment activated${COLOR_NC}"
+echo "Virtual environment: ${VENV_DIR}"
+echo "Profile: ${PROFILE}"
+{% if useful_commands %}
+echo -e "\nUseful commands:"
+{% for cmd in useful_commands %}
+echo "  {{ cmd.command }}  # {{ cmd.description }}"
+{% endfor %}
+{% endif %}
+
+{% if cleanup_logs %}
+# --- Cleanup ---
+# Remove temporary log files older than 1 day
+find /tmp/{{ project_name }}_setup -name "*.log" -mtime +1 -delete 2>/dev/null
+{% endif %}

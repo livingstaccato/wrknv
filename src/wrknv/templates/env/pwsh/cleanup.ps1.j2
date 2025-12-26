@@ -1,0 +1,16 @@
+# --- Cleanup Previous Environment ---
+Write-Header "🧹 Cleaning Previous Environment"
+
+# Remove any existing Python aliases
+Remove-Alias -Name python -ErrorAction SilentlyContinue
+Remove-Alias -Name python3 -ErrorAction SilentlyContinue
+Remove-Alias -Name pip -ErrorAction SilentlyContinue
+Remove-Alias -Name pip3 -ErrorAction SilentlyContinue
+
+# Clear existing PYTHONPATH
+Remove-Item Env:PYTHONPATH -ErrorAction SilentlyContinue
+
+# Store original PATH for restoration if needed
+$script:OriginalPath = $env:PATH
+
+Write-Success "Cleared Python aliases and PYTHONPATH"

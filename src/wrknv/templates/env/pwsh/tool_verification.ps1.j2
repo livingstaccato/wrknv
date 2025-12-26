@@ -1,0 +1,33 @@
+# --- Tool Verification ---
+Write-Header "🔍 Verifying Installation"
+
+Write-Host "`nTool Locations & Versions:" -ForegroundColor Green
+Write-Host ("━" * 40)
+
+{% for tool in tools_to_verify %}
+# {{ tool.name }}
+{% if tool.check_type == "command" %}
+${{ tool.var_name }}Cmd = Get-Command {{ tool.command }} -ErrorAction SilentlyContinue
+if (${{ tool.var_name }}Cmd) {
+    Write-Host ("{0,-12}: {1}" -f "{{ tool.name }}", ${{ tool.var_name }}Cmd.Source)
+    {% if tool.version_cmd %}
+    $Version = & {{ tool.version_cmd }} 2>&1 | Select-Object -First 1
+    Write-Host ("{0,-12}  {1}" -f "", $Version)
+    {% endif %}
+}
+{% elif tool.check_type == "file" %}
+${{ tool.var_name }}Path = Join-Path $VenvDir "Scripts/{{ tool.command }}.exe"
+if (Test-Path ${{ tool.var_name }}Path) {
+    Write-Host ("{0,-12}: {1}" -f "{{ tool.name }}", ${{ tool.var_name }}Path)
+    {% if tool.version_cmd %}
+    $Version = & ${{ tool.var_name }}Path {{ tool.version_args }} 2>&1 | Select-Object -First 1
+    Write-Host ("{0,-12}  {1}" -f "", $Version)
+    {% elif tool.description %}
+    Write-Host ("{0,-12}  {1}" -f "", "{{ tool.description }}")
+    {% endif %}
+}
+{% endif %}
+
+{% endfor %}
+
+Write-Host ("━" * 40)

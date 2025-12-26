@@ -1,0 +1,49 @@
+#!/bin/bash
+#
+# env.sh - {{ project_name }} Development Environment Setup
+#
+# This script sets up a clean, isolated development environment for {{ project_name }}
+# using 'uv' for high-performance virtual environment and dependency management.
+#
+# Usage: source ./env.sh
+#
+
+# --- Configuration ---
+COLOR_BLUE='\033[0;34m'
+COLOR_GREEN='\033[0;32m'
+COLOR_YELLOW='\033[0;33m'
+COLOR_RED='\033[0;31m'
+COLOR_NC='\033[0m'
+
+{% include 'spinner.sh.j2' %}
+
+{% include 'print_helpers.sh.j2' %}
+
+{% include 'cleanup.sh.j2' %}
+
+{% include 'validation.sh.j2' %}
+
+{% include 'uv_installation.sh.j2' %}
+
+{% include 'platform_detection.sh.j2' %}
+
+{% include 'python_version_check.sh.j2' %}
+
+{% include 'venv_setup.sh.j2' %}
+
+{% include 'dependency_installation.sh.j2' %}
+
+{% if install_siblings %}
+{% include 'sibling_packages.sh.j2' %}
+{% endif %}
+
+{% include 'environment_config.sh.j2' %}
+
+{% if include_tool_verification %}
+{% include 'tool_verification.sh.j2' %}
+{% endif %}
+
+{% include 'final_summary.sh.j2' %}
+
+# Return success
+return 0 2>/dev/null || exit 0

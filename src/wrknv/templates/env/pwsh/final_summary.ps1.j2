@@ -1,0 +1,20 @@
+# --- Final Summary ---
+Write-Header "✅ Environment Ready!"
+
+Write-Host "`n$("{{ project_name }} development environment activated" | Write-Host -ForegroundColor Green)"
+Write-Host "Virtual environment: $VenvDir"
+Write-Host "Profile: $Profile"
+{% if useful_commands %}
+Write-Host "`nUseful commands:"
+{% for cmd in useful_commands %}
+Write-Host "  {{ cmd.command }}  # {{ cmd.description }}"
+{% endfor %}
+{% endif %}
+
+{% if cleanup_logs %}
+# --- Cleanup ---
+# Remove temporary log files older than 1 day
+if (Test-Path $LogDir) {
+    Get-ChildItem -Path $LogDir -Filter "*.log" | Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-1) } | Remove-Item -Force -ErrorAction SilentlyContinue
+}
+{% endif %}

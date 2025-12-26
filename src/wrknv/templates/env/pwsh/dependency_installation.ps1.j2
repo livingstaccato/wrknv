@@ -1,0 +1,42 @@
+# --- Dependency Installation ---
+Write-Header "📦 Installing Dependencies"
+
+{% if create_log_dir %}
+# Create log directory
+$LogDir = Join-Path $env:TEMP "{{ project_name }}_setup"
+New-Item -ItemType Directory -Force -Path $LogDir | Out-Null
+{% endif %}
+
+Write-Host "Syncing dependencies..." -NoNewline
+try {
+    {% if create_log_dir %}
+    & uv sync --all-groups 2>&1 | Out-File -FilePath (Join-Path $LogDir "sync.log")
+    {% else %}
+    & uv sync --all-groups
+    {% endif %}
+    Write-Success " Dependencies synced"
+}
+catch {
+    Write-Error " Dependency sync failed"
+    {% if create_log_dir %}
+    Write-Host "Check log at: $(Join-Path $LogDir 'sync.log')"
+    {% endif %}
+    exit 1
+}
+
+Write-Host "Installing {{ project_name }} in editable mode..." -NoNewline
+try {
+    {% if create_log_dir %}
+    & uv pip install --no-deps -e . 2>&1 | Out-File -FilePath (Join-Path $LogDir "install.log")
+    {% else %}
+    & uv pip install --no-deps -e .
+    {% endif %}
+    Write-Success " {{ project_name }} installed"
+}
+catch {
+    Write-Error " Installation failed"
+    {% if create_log_dir %}
+    Write-Host "Check log at: $(Join-Path $LogDir 'install.log')"
+    {% endif %}
+    exit 1
+}

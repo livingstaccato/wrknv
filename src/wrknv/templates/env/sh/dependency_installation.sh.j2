@@ -1,0 +1,52 @@
+# --- Dependency Installation ---
+print_header "📦 Installing Dependencies"
+
+{% if create_log_dir %}
+# Create log directory
+mkdir -p /tmp/{{ project_name }}_setup
+{% endif %}
+
+echo -n "Syncing dependencies..."
+{% if use_spinner %}
+uv sync --all-groups > /tmp/{{ project_name }}_setup/sync.log 2>&1 &
+SYNC_PID=$!
+spinner $SYNC_PID
+wait $SYNC_PID
+SYNC_EXIT_CODE=$?
+{% else %}
+uv sync --all-groups
+SYNC_EXIT_CODE=$?
+{% endif %}
+
+if [ $SYNC_EXIT_CODE -eq 0 ]; then
+    print_success "Dependencies synced"
+else
+    print_warning "Dependency sync failed - will install project and siblings manually"
+    echo "Check /tmp/{{ project_name }}_setup/sync.log for details"
+    
+    # Try to install just the project without dependencies first
+    echo -n "Installing {{ project_name }} without dependencies..."
+    {% if use_spinner %}
+    uv pip install --no-deps -e . > /tmp/{{ project_name }}_setup/install_nodeps.log 2>&1 &
+    INSTALL_PID=$!
+    spinner $INSTALL_PID
+    wait $INSTALL_PID
+    {% else %}
+    uv pip install --no-deps -e .
+    {% endif %}
+    if [ $? -eq 0 ]; then
+        print_success "{{ project_name }} installed (no deps)"
+    else
+        print_error "Failed to install {{ project_name }}"
+        return 1 2>/dev/null || exit 1
+    fi
+fi
+
+echo -n "Installing {{ project_name }} in editable mode..."
+{% if use_spinner %}
+uv pip install --no-deps -e . > /tmp/{{ project_name }}_setup/install.log 2>&1 &
+spinner $!
+{% else %}
+uv pip install --no-deps -e .
+{% endif %}
+print_success "{{ project_name }} installed"

@@ -1,0 +1,32 @@
+# --- Tool Verification ---
+print_header "🔍 Verifying Installation"
+
+echo -e "\n${COLOR_GREEN}Tool Locations & Versions:${COLOR_NC}"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+{% for tool in tools_to_verify %}
+# {{ tool.name }}
+{% if tool.check_type == "command" %}
+if command -v {{ tool.command }} &> /dev/null; then
+    {{ tool.var_name }}_PATH=$(command -v {{ tool.command }} 2>/dev/null || which {{ tool.command }} 2>/dev/null || echo "{{ tool.command }}")
+    printf "%-12s: %s\n" "{{ tool.name }}" "${{ tool.var_name }}_PATH"
+    {% if tool.version_cmd %}
+    printf "%-12s  %s\n" "" "$({{ tool.version_cmd }})"
+    {% endif %}
+fi
+{% elif tool.check_type == "file" %}
+{{ tool.var_name }}_PATH="${VENV_DIR}/bin/{{ tool.command }}"
+if [ -f "${{ tool.var_name }}_PATH" ]; then
+    printf "%-12s: %s\n" "{{ tool.name }}" "${{ tool.var_name }}_PATH"
+    {% if tool.version_cmd %}
+    {{ tool.var_name }}_VERSION=$({{ tool.version_cmd }})
+    printf "%-12s  %s\n" "" "${{ tool.var_name }}_VERSION"
+    {% elif tool.description %}
+    printf "%-12s  %s\n" "" "{{ tool.description }}"
+    {% endif %}
+fi
+{% endif %}
+
+{% endfor %}
+
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

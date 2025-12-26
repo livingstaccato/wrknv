@@ -29,6 +29,10 @@ ENV/
 workenv/
 workenv_*/
 
+# But allow template env directories (avoid case-insensitive match with ENV/)
+!src/wrknv/templates/env/
+!src/wrknv/templates/env/**
+
 # IDEs
 .vscode/
 .idea/

@@ -1,0 +1,131 @@
+# --- Sibling Packages ---
+Write-Header "🤝 Installing Sibling Packages"
+
+$ParentDir = Split-Path -Parent (Get-Location)
+$SiblingCount = 0
+
+{% if siblings %}
+# New unified siblings configuration
+{% for sibling in siblings %}
+{% if sibling is string %}
+# Simple string pattern
+Get-ChildItem -Path $ParentDir -Directory -Filter "{{ sibling }}" | ForEach-Object {
+    $SiblingName = $_.Name
+    Write-Host "Installing $SiblingName..." -NoNewline
+    try {
+        {% if create_log_dir %}
+        & uv pip install -e $_.FullName 2>&1 | Out-File -FilePath (Join-Path $LogDir "$SiblingName.log")
+        {% else %}
+        & uv pip install -e $_.FullName
+        {% endif %}
+        Write-Success " $SiblingName installed"
+        $SiblingCount++
+    }
+    catch {
+        Write-Warning " Failed to install $SiblingName"
+    }
+}
+{% else %}
+# Sibling with configuration
+{% if sibling.pattern is defined %}
+# Pattern-based sibling
+Get-ChildItem -Path $ParentDir -Directory -Filter "{{ sibling.pattern }}" | ForEach-Object {
+    $SiblingName = $_.Name
+    $WithDeps = {% if sibling.with_deps|default(true) %}$true{% else %}$false{% endif %}
+    $DepsText = if ($WithDeps) { " with dependencies" } else { " without dependencies" }
+    Write-Host "Installing $SiblingName$DepsText..." -NoNewline
+    try {
+        if ($WithDeps) {
+            {% if create_log_dir %}
+            & uv pip install -e $_.FullName 2>&1 | Out-File -FilePath (Join-Path $LogDir "$SiblingName.log")
+            {% else %}
+            & uv pip install -e $_.FullName
+            {% endif %}
+        } else {
+            {% if create_log_dir %}
+            & uv pip install --no-deps -e $_.FullName 2>&1 | Out-File -FilePath (Join-Path $LogDir "$SiblingName.log")
+            {% else %}
+            & uv pip install --no-deps -e $_.FullName
+            {% endif %}
+        }
+        Write-Success " $SiblingName installed"
+        $SiblingCount++
+    }
+    catch {
+        Write-Warning " Failed to install $SiblingName"
+    }
+}
+{% else %}
+# Explicit sibling
+{% set var_name = sibling.var_name|default(sibling.name.replace('-', '_')) %}
+${{ var_name }}Dir = Join-Path $ParentDir "{{ sibling.name }}"
+if (Test-Path ${{ var_name }}Dir) {
+    $WithDeps = {% if sibling.with_deps|default(true) %}$true{% else %}$false{% endif %}
+    $DepsText = if ($WithDeps) { " with dependencies" } else { " without dependencies" }
+    Write-Host "Installing {{ sibling.name }}$DepsText..." -NoNewline
+    try {
+        if ($WithDeps) {
+            & uv pip install -e ${{ var_name }}Dir
+        } else {
+            & uv pip install --no-deps -e ${{ var_name }}Dir
+        }
+        Write-Success " {{ sibling.name }} installed"
+        $SiblingCount++
+    }
+    catch {
+        Write-Warning " Failed to install {{ sibling.name }} package from '${{ var_name }}Dir'"
+        Write-Host "Attempting to continue..."
+    }
+}
+{% endif %}
+{% endif %}
+{% endfor %}
+
+{% elif sibling_patterns or special_siblings %}
+# Legacy format for backward compatibility
+{% for sibling_pattern in sibling_patterns %}
+Get-ChildItem -Path $ParentDir -Directory -Filter "{{ sibling_pattern }}" | ForEach-Object {
+    $SiblingName = $_.Name
+    Write-Host "Installing $SiblingName..." -NoNewline
+    try {
+        {% if create_log_dir %}
+        & uv pip install --no-deps -e $_.FullName 2>&1 | Out-File -FilePath (Join-Path $LogDir "$SiblingName.log")
+        {% else %}
+        & uv pip install --no-deps -e $_.FullName
+        {% endif %}
+        Write-Success " $SiblingName installed"
+        $SiblingCount++
+    }
+    catch {
+        Write-Warning " Failed to install $SiblingName"
+    }
+}
+{% endfor %}
+
+{% if special_siblings %}
+# Special handling for specific packages
+{% for special in special_siblings %}
+${{ special.var_name }}Dir = Join-Path $ParentDir "{{ special.name }}"
+if (Test-Path ${{ special.var_name }}Dir) {
+    Write-Host "Found {{ special.name }} package. Installing in editable mode{{ ' with dependencies' if special.with_deps else '' }}..." -NoNewline
+    try {
+        {% if special.with_deps %}
+        & uv pip install -e ${{ special.var_name }}Dir
+        {% else %}
+        & uv pip install --no-deps -e ${{ special.var_name }}Dir
+        {% endif %}
+        Write-Success " {{ special.name }} installed"
+        $SiblingCount++
+    }
+    catch {
+        Write-Warning " Failed to install {{ special.name }} package from '${{ special.var_name }}Dir'"
+        Write-Host "Attempting to continue..."
+    }
+}
+{% endfor %}
+{% endif %}
+{% endif %}
+
+if ($SiblingCount -eq 0) {
+    Write-Warning "No sibling packages found"
+}

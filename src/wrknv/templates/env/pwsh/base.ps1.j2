@@ -1,0 +1,40 @@
+# env.ps1 - {{ project_name }} Development Environment Setup
+#
+# This script sets up a clean, isolated development environment for {{ project_name }}
+# using 'uv' for high-performance virtual environment and dependency management.
+#
+# Usage: .\env.ps1
+#
+
+# --- Configuration ---
+$ErrorActionPreference = "Stop"
+$ProgressPreference = "SilentlyContinue"
+
+{% include 'print_helpers.ps1.j2' %}
+
+{% include 'cleanup.ps1.j2' %}
+
+{% include 'validation.ps1.j2' %}
+
+{% include 'uv_installation.ps1.j2' %}
+
+{% include 'platform_detection.ps1.j2' %}
+
+{% include 'venv_setup.ps1.j2' %}
+
+{% include 'dependency_installation.ps1.j2' %}
+
+{% if install_siblings %}
+{% include 'sibling_packages.ps1.j2' %}
+{% endif %}
+
+{% include 'environment_config.ps1.j2' %}
+
+{% if include_tool_verification %}
+{% include 'tool_verification.ps1.j2' %}
+{% endif %}
+
+{% include 'final_summary.ps1.j2' %}
+
+# Return success
+exit 0

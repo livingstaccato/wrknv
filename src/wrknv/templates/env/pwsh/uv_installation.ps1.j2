@@ -1,0 +1,30 @@
+# --- UV Installation ---
+Write-Header "🚀 Checking UV Package Manager"
+
+$uvCommand = Get-Command uv -ErrorAction SilentlyContinue
+if (-not $uvCommand) {
+    Write-Host "Installing UV..."
+    
+    # Install UV using the official PowerShell installer
+    try {
+        powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+        
+        # Refresh PATH
+        $env:PATH = [System.Environment]::GetEnvironmentVariable("PATH", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("PATH", "User")
+        
+        # Check if UV is now available
+        $uvCommand = Get-Command uv -ErrorAction SilentlyContinue
+        if ($uvCommand) {
+            Write-Success "UV installed successfully"
+        } else {
+            Write-Error "UV installation failed"
+            exit 1
+        }
+    }
+    catch {
+        Write-Error "UV installation failed: $_"
+        exit 1
+    }
+} else {
+    Write-Success "UV already installed"
+}

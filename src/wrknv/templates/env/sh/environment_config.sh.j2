@@ -1,0 +1,23 @@
+# --- Environment Configuration ---
+print_header "🔧 Configuring Environment"
+
+# Set clean PYTHONPATH
+export PYTHONPATH="${PWD}/src:${PWD}"
+echo "PYTHONPATH: ${PYTHONPATH}"
+
+{% if deduplicate_path %}
+# Clean up PATH - remove duplicates
+# Ensure UV bin directories are included
+UV_BIN_PATHS="$HOME/.local/bin:$HOME/.cargo/bin"
+NEW_PATH="${VENV_DIR}/bin:${UV_BIN_PATHS}"
+OLD_IFS="$IFS"
+IFS=':'
+for p in $PATH; do
+    case ":$NEW_PATH:" in
+        *":$p:"*) ;;
+        *) NEW_PATH="$NEW_PATH:$p" ;;
+    esac
+done
+IFS="$OLD_IFS"
+export PATH="$NEW_PATH"
+{% endif %}

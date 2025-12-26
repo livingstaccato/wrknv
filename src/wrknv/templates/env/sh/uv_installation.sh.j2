@@ -1,0 +1,30 @@
+# --- UV Installation ---
+print_header "🚀 Checking UV Package Manager"
+
+if ! command -v uv &> /dev/null; then
+    echo "Installing UV..."
+    {% if use_spinner %}
+    curl -LsSf https://astral.sh/uv/install.sh | sh > /tmp/uv_install.log 2>&1 &
+    spinner $!
+    {% else %}
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    {% endif %}
+    
+    UV_ENV_PATH_LOCAL="$HOME/.local/bin/env"
+    UV_ENV_PATH_CARGO="$HOME/.cargo/env"
+    
+    if [ -f "$UV_ENV_PATH_LOCAL" ]; then
+        source "$UV_ENV_PATH_LOCAL"
+    elif [ -f "$UV_ENV_PATH_CARGO" ]; then
+        source "$UV_ENV_PATH_CARGO"
+    fi
+    
+    if command -v uv &> /dev/null; then
+        print_success "UV installed successfully"
+    else
+        print_error "UV installation failed. Check /tmp/uv_install.log"
+        return 1 2>/dev/null || exit 1
+    fi
+else
+    print_success "UV already installed"
+fi

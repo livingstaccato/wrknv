@@ -1,0 +1,23 @@
+# --- Platform Detection ---
+TFOS=$(uname -s | tr '[:upper:]' '[:lower:]')
+TFARCH=$(uname -m)
+case "$TFARCH" in
+    x86_64) TFARCH="amd64" ;;
+    aarch64|arm64) TFARCH="arm64" ;;
+esac
+
+# Workenv directory setup
+PROFILE="{% raw %}${{% endraw %}{{ env_profile_var }}{% raw %}:-default}{% endraw %}"
+if [ "$PROFILE" = "default" ]; then
+    VENV_DIR="workenv/{{ venv_prefix }}_${TFOS}_${TFARCH}"
+else
+    VENV_DIR="workenv/${PROFILE}_${TFOS}_${TFARCH}"
+fi
+
+# Validate platform
+if [[ "$TFOS" != "darwin" && "$TFOS" != "linux" ]]; then
+    print_warning "Detected OS: $TFOS (only darwin and linux are fully tested)"
+fi
+
+# Set UV project environment early so uv commands use the correct venv
+export UV_PROJECT_ENVIRONMENT="${VENV_DIR}"

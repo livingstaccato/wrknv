@@ -1,0 +1,14 @@
+# --- Python Version Check ---
+PYTHON_VERSION=$(python3 --version 2>&1 | cut -d' ' -f2)
+PYTHON_MAJOR=$(echo "$PYTHON_VERSION" | cut -d'.' -f1)
+PYTHON_MINOR=$(echo "$PYTHON_VERSION" | cut -d'.' -f2)
+
+{% if python_requirement %}
+# Check Python version requirement: {{ python_requirement }}
+if [ "$PYTHON_MAJOR" -lt 3 ] || ([ "$PYTHON_MAJOR" -eq 3 ] && [ "$PYTHON_MINOR" -lt 11 ]); then
+    print_error "Python 3.11+ required but found $PYTHON_VERSION"
+    return 1 2>/dev/null || exit 1
+fi
+{% endif %}
+
+print_success "Python $PYTHON_VERSION detected"

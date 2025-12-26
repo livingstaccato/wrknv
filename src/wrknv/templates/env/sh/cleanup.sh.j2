@@ -1,0 +1,16 @@
+# --- Cleanup Previous Environment ---
+print_header "🧹 Cleaning Previous Environment"
+
+# Remove any existing Python aliases
+unalias python 2>/dev/null
+unalias python3 2>/dev/null
+unalias pip 2>/dev/null
+unalias pip3 2>/dev/null
+
+# Clear existing PYTHONPATH
+unset PYTHONPATH
+
+# Store original PATH for restoration if needed
+ORIGINAL_PATH="${PATH}"
+
+print_success "Cleared Python aliases and PYTHONPATH"
