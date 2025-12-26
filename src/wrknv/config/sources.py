@@ -43,7 +43,7 @@ class FileConfigSource(ConfigSource):
         """Initialize with file path and optional section."""
         self.path = path
         self.section = section
-        self._data = {}
+        self._data: dict[str, Any] = {}
         self._load()
 
     def _load(self) -> None:
