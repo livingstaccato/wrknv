@@ -9,7 +9,7 @@ Execute commands inside running containers."""
 
 from __future__ import annotations
 
-import os
+import subprocess
 from typing import Any
 
 from attrs import define
@@ -72,11 +72,11 @@ class ContainerExec:
 
             # Execute command
 
-            # For interactive commands, we need to use os.system or similar
+            # For interactive commands, we need to use subprocess.run directly
             # as foundation.process might not support interactive TTY yet
             if interactive and tty:
-                # Build command for os.system
-                cmd_str = self._build_exec_command(
+                # Build command as a list for subprocess
+                cmd_list = self._build_exec_command_list(
                     command=command,
                     interactive=True,
                     tty=True,
@@ -85,9 +85,9 @@ class ContainerExec:
                     environment=environment,
                 )
 
-                # Use os.system for interactive TTY support
-                result = os.system(cmd_str)
-                return result == 0
+                # Use subprocess.run for interactive TTY support (shell=False for security)
+                result = subprocess.run(cmd_list, check=False)  # noqa: S603
+                return result.returncode == 0
 
             else:
                 # Non-interactive, use foundation.process
@@ -203,7 +203,7 @@ class ContainerExec:
         # Return configured default if nothing found
         return self.default_shell
 
-    def _build_exec_command(
+    def _build_exec_command_list(
         self,
         command: list[str],
         interactive: bool,
@@ -211,8 +211,8 @@ class ContainerExec:
         user: str | None,
         workdir: str | None,
         environment: dict[str, str] | None,
-    ) -> str:
-        """Build docker exec command string for os.system.
+    ) -> list[str]:
+        """Build docker exec command as a list for subprocess.run.
 
         Args:
             command: Command to execute
@@ -223,7 +223,7 @@ class ContainerExec:
             environment: Environment variables
 
         Returns:
-            Command string
+            Command as list of strings (safe for subprocess with shell=False)
         """
         parts = [self.runtime.runtime_command, "exec"]
 
@@ -242,10 +242,7 @@ class ContainerExec:
         parts.append(self.container_name)
         parts.extend(command)
 
-        # Shell escape and join
-        from shlex import quote
-
-        return " ".join(quote(part) for part in parts)
+        return parts
 
 
 # 🧰🌍🔚
