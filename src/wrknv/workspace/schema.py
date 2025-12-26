@@ -102,9 +102,7 @@ class WorkspaceConfig(BaseConfig):
     sync_strategy: str = "manual"  # "manual", "auto", "check"
 
     @classmethod
-    def from_dict(
-        cls, data: dict[str, Any], source: Any = None
-    ) -> WorkspaceConfig:
+    def from_dict(cls, data: dict[str, Any], source: Any = None) -> WorkspaceConfig:
         """Create WorkspaceConfig from dictionary."""
         repos = [RepoConfig.from_dict(repo) for repo in data.get("repos", [])]
 

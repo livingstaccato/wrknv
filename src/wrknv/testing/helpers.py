@@ -15,7 +15,6 @@ import contextlib
 import os
 from pathlib import Path
 import platform
-import subprocess
 import sys
 from typing import Any
 
