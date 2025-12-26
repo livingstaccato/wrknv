@@ -269,32 +269,7 @@ class ContainerManager:
         import shutil
         import tarfile
 
-        def _safe_tar_members(
-            tar: tarfile.TarFile, dest_dir: Path
-        ) -> list[tarfile.TarInfo]:
-            """Filter tar members to prevent path traversal attacks.
-
-            Only allows members that resolve within the destination directory.
-            """
-            safe_members = []
-            dest_resolved = dest_dir.resolve()
-
-            for member in tar.getmembers():
-                # Resolve the full path where this member would be extracted
-                member_path = (dest_dir / member.name).resolve()
-
-                # Check if the resolved path is within the destination
-                try:
-                    member_path.relative_to(dest_resolved)
-                    safe_members.append(member)
-                except ValueError:
-                    # Path would escape destination directory - skip it
-                    logger.warning(
-                        "Skipping potentially unsafe tar member",
-                        member=member.name,
-                    )
-
-            return safe_members
+        from provide.foundation.archive.security import is_safe_path
 
         try:
             if not backup_path.exists():
@@ -312,8 +287,18 @@ class ContainerManager:
                 shutil.rmtree(volumes_dir)
 
             with tarfile.open(backup_path, "r:*") as tar:
-                # Filter members to prevent path traversal attacks
-                safe_members = _safe_tar_members(tar, container_dir)
+                # Filter members using foundation's is_safe_path to prevent path traversal
+                safe_members = [
+                    m for m in tar.getmembers()
+                    if is_safe_path(container_dir, m.name)
+                ]
+                # Log any skipped members
+                skipped = len(tar.getmembers()) - len(safe_members)
+                if skipped > 0:
+                    logger.warning(
+                        "Skipped potentially unsafe tar members",
+                        skipped_count=skipped,
+                    )
                 tar.extractall(container_dir, members=safe_members)  # noqa: S202
 
             logger.info("📥 Restored volumes from backup", backup=str(backup_path))
