@@ -145,3 +145,6 @@ external = "lychee --verbose --no-progress './docs/**/*.md' './src/**/*.md' './R
 setup = "uv sync"
 test = "pytest -n auto"
 check = "ruff format . && ruff check . && mypy src/"
+
+[tasks.security]
+_default = "bandit -r src/ -c pyproject.toml"
