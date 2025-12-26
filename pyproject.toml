@@ -138,6 +138,13 @@ module = [
 ]
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+# Container module is experimental - ignore errors
+module = [
+    "wrknv.container.*",
+]
+ignore_errors = true
+
 [tool.pytest.ini_options]
 log_cli = true
 log_cli_level = "DEBUG"
