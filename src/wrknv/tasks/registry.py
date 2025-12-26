@@ -178,7 +178,7 @@ class TaskRegistry:
 
         Args:
             name: Task name (last part, e.g., "unit" in "test.unit")
-            value: Task definition (string or dict)
+            value: Task definition (string, list, or dict)
             namespace: Parent namespace (e.g., "test" for "test.unit")
 
         Returns:
@@ -186,6 +186,10 @@ class TaskRegistry:
         """
         if isinstance(value, str):
             # Simple task: name = "command"
+            return TaskConfig(name=name, run=value, namespace=namespace)
+
+        if isinstance(value, list):
+            # Composite task: name = ["task1", "task2", ...]
             return TaskConfig(name=name, run=value, namespace=namespace)
 
         if isinstance(value, dict):
