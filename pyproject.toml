@@ -223,9 +223,6 @@ dev = [
     "pytest-xdist>=3.8.0",
 ]
 
-[tool.uv.sources]
-provide-testkit = { path = "../provide-testkit", editable = true }
-
 [tool.flavor]
 # Configuration for packaging wrknv with flavor
 entry_point = "wrknv.cli:entry_point"
