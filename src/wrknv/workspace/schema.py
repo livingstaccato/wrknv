@@ -102,7 +102,9 @@ class WorkspaceConfig(BaseConfig):
     sync_strategy: str = "manual"  # "manual", "auto", "check"
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> WorkspaceConfig:
+    def from_dict(  # type: ignore[override]
+        cls, data: dict[str, Any], source: Any = None
+    ) -> WorkspaceConfig:
         """Create WorkspaceConfig from dictionary."""
         repos = [RepoConfig.from_dict(repo) for repo in data.get("repos", [])]
 
@@ -119,7 +121,7 @@ class WorkspaceConfig(BaseConfig):
             sync_strategy=data.get("sync_strategy", "manual"),
         )
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self, include_sensitive: bool = True) -> dict[str, Any]:  # type: ignore[override]
         """Convert to dictionary, excluding None values for TOML compatibility."""
         data = {
             "version": self.version,

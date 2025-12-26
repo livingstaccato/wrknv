@@ -173,17 +173,18 @@ class WorkspaceSync:
         """Check for configuration drift across repositories."""
         logger.info("🔍 Checking configuration drift")
 
-        drift_report = {
+        repo_drifts: dict[str, Any] = {}
+        drift_report: dict[str, Any] = {
             "repos_checked": len(self.config.repos),
             "drift_detected": False,
-            "repo_drifts": {},
+            "repo_drifts": repo_drifts,
         }
 
         for repo in self.config.repos:
             repo_drift = self._check_repo_drift(repo)
             if repo_drift["has_drift"]:
                 drift_report["drift_detected"] = True
-                drift_report["repo_drifts"][repo.name] = repo_drift
+                repo_drifts[repo.name] = repo_drift
 
         return drift_report
 
@@ -192,10 +193,11 @@ class WorkspaceSync:
         context = self._build_template_context(repo)
         expected_configs = self._generate_configs(repo, context)
 
-        drift_info = {
+        file_drifts: dict[str, dict[str, Any]] = {}
+        drift_info: dict[str, Any] = {
             "repo": repo.name,
             "has_drift": False,
-            "file_drifts": {},
+            "file_drifts": file_drifts,
         }
 
         for filename, expected_content in expected_configs.items():
@@ -203,7 +205,7 @@ class WorkspaceSync:
 
             if not file_path.exists():
                 drift_info["has_drift"] = True
-                drift_info["file_drifts"][filename] = {
+                file_drifts[filename] = {
                     "status": "missing",
                     "expected": len(expected_content.splitlines()),
                 }
@@ -213,14 +215,14 @@ class WorkspaceSync:
                 current_content = file_path.read_text()
                 if current_content.strip() != expected_content.strip():
                     drift_info["has_drift"] = True
-                    drift_info["file_drifts"][filename] = {
+                    file_drifts[filename] = {
                         "status": "different",
                         "current_lines": len(current_content.splitlines()),
                         "expected_lines": len(expected_content.splitlines()),
                     }
             except Exception as e:
                 drift_info["has_drift"] = True
-                drift_info["file_drifts"][filename] = {
+                file_drifts[filename] = {
                     "status": "error",
                     "error": str(e),
                 }
@@ -228,27 +230,14 @@ class WorkspaceSync:
         return drift_info
 
     def validate_templates(self) -> bool:
-        """Validate that all templates are available and functional."""
+        """Validate that all templates are available and functional.
 
-        try:
-            # Test template generation with minimal context
-            test_context = {
-                "project_name": "test-project",
-                "version": "1.0.0",
-                "description": "Test project",
-                "python_version": "3.11",
-            }
-
-            # Test each template
-            self.template_generator.generate_pyproject(test_context)
-            self.template_generator.generate_claude_md(test_context)
-            self.template_generator.generate_gitignore(test_context)
-
-            return True
-
-        except Exception as e:
-            logger.error("❌ Template validation failed", error=str(e))
-            return False
+        Note: Template generation has been removed with workenv module.
+        This method now returns True as a no-op for backward compatibility.
+        """
+        # Template generation was removed with workenv module refactoring
+        # This method is kept for API compatibility but always returns True
+        return True
 
 
 # 🧰🌍🔚

@@ -6,17 +6,18 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 import sys
 import tomllib
+from typing import Any
 
 from packaging.specifiers import SpecifierSet
 from packaging.version import Version
 from provide.foundation.process import run
-from provide.foundation.serialization import json
 
 
-def get_venv_python_version(venv_dir: Path) -> dict[str, any] | None:
+def get_venv_python_version(venv_dir: Path) -> dict[str, Any] | None:
     """Get Python version information from a virtual environment.
 
     Args:
