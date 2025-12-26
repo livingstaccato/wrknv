@@ -86,7 +86,7 @@ class ContainerExec:
                 )
 
                 # Use subprocess.run for interactive TTY support (shell=False for security)
-                result = subprocess.run(cmd_list, check=False)  # noqa: S603
+                result = subprocess.run(cmd_list, check=False)
                 return result.returncode == 0
 
             else:
