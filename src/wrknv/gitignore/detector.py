@@ -77,10 +77,10 @@ class ProjectDetector:
 
     def __init__(self) -> None:
         """Initialize the detector."""
-        self.detected_languages = set()
-        self.detected_frameworks = set()
-        self.detected_tools = set()
-        self.detected_os = set()
+        self.detected_languages: set[str] = set()
+        self.detected_frameworks: set[str] = set()
+        self.detected_tools: set[str] = set()
+        self.detected_os: set[str] = set()
         logger.debug("ProjectDetector initialized")
 
     def reset(self) -> None:

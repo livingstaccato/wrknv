@@ -20,7 +20,7 @@ import sys
 from typing import Any
 
 from provide.foundation import logger
-from provide.foundation.process import run
+from provide.foundation.process import CompletedProcess, run
 
 
 def get_workenv_dir(package_name: str | None = None) -> Path:
@@ -190,7 +190,7 @@ class WorkenvTestRunner:
         logger.info("installing_dependencies", cmd=cmd)
         run(cmd, env=env, check=True)
 
-    def run_pytest(self, *args: str, **kwargs: Any) -> subprocess.CompletedProcess:
+    def run_pytest(self, *args: str, **kwargs: Any) -> CompletedProcess:
         """
         Run pytest with the workenv activated.
 
@@ -210,7 +210,7 @@ class WorkenvTestRunner:
         logger.info("running_tests", cmd=pytest_cmd)
         return run(pytest_cmd, env=env, **kwargs)
 
-    def run(self, cmd: list, **kwargs: Any) -> subprocess.CompletedProcess:
+    def run(self, cmd: list[str], **kwargs: Any) -> CompletedProcess:
         """
         Run any command with the workenv activated.
 
