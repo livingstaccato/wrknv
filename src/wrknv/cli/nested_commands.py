@@ -19,9 +19,60 @@ from typing import Any, TypeVar
 import click
 from provide.foundation import logger
 from provide.foundation.hub import get_hub
-from provide.foundation.hub.commands import CommandInfo, _extract_click_type
+from provide.foundation.hub.commands import CommandInfo
 
 F = TypeVar("F", bound=Callable[..., Any])
+
+
+def _extract_click_type(annotation: Any) -> Any:
+    """Extract Click-compatible type from a Python type annotation.
+
+    Args:
+        annotation: Python type annotation (e.g., str, int, Path, Optional[str])
+
+    Returns:
+        Click-compatible type for the annotation
+    """
+    from pathlib import Path
+    from typing import get_args, get_origin
+
+    # Handle None/NoneType
+    if annotation is None or annotation is type(None):
+        return str
+
+    # Handle Optional types (Union[X, None])
+    origin = get_origin(annotation)
+    if origin is type(None):
+        return str
+
+    # Handle Union types - extract first non-None type
+    import typing
+
+    if origin in (typing.Union, getattr(typing, "UnionType", None)):
+        args = get_args(annotation)
+        for arg in args:
+            if arg is not type(None):
+                return _extract_click_type(arg)
+        return str
+
+    # Handle basic types
+    if annotation is str:
+        return str
+    if annotation is int:
+        return int
+    if annotation is float:
+        return float
+    if annotation is bool:
+        return bool
+    if annotation is Path or (isinstance(annotation, type) and issubclass(annotation, Path)):
+        return click.Path()
+
+    # Handle list/tuple
+    if origin in (list, tuple):
+        return str  # Click handles lists differently
+
+    # Default to string
+    return str
 
 
 @dataclass
