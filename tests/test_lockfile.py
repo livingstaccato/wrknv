@@ -151,7 +151,7 @@ class TestLockfile(FoundationTestCase):
 
         assert data["config_checksum"] == "abc123"
         assert data["created_at"] == "2025-01-01T00:00:00"
-        assert data["wrknv_version"] == "0.1.0"
+        assert data["wrknv_version"] == "0.3.0"
         assert "uv" in data["resolved_tools"]
         assert data["resolved_tools"]["uv"]["version"] == "0.5.0"
 
