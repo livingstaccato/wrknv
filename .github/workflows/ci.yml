@@ -9,7 +9,7 @@ on:
 
 env:
   PYTHON_VERSION: "3.11"
-  UV_VERSION: "0.4.0"
+  UV_VERSION: "0.5.14"
 
 jobs:
   lint:
@@ -174,8 +174,7 @@ jobs:
           uv venv
           source .venv/bin/activate
           uv pip install -e ".[dev]"
-          uv pip install build
-          python -m build
+          uv build
       
       - name: Check distributions
         run: |
