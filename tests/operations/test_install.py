@@ -10,11 +10,15 @@ Tests for the install functionality in wrknv."""
 from __future__ import annotations
 
 import stat
+import sys
 import tarfile
 import zipfile
 
-from provide.testkit.mocking import patch
 import pytest
+from provide.testkit.mocking import patch
+
+# Platform detection
+IS_WINDOWS = sys.platform == "win32"
 
 from wrknv.wenv.operations.install import (
     clean_directory,
@@ -152,6 +156,7 @@ class TestExtractOperations:
 class TestExecutableOperations:
     """Test executable-related operations."""
 
+    @pytest.mark.skipif(IS_WINDOWS, reason="chmod not supported on Windows")
     def test_make_executable_unix(self, tmp_path) -> None:
         """Test making file executable on Unix."""
         test_file = tmp_path / "script.sh"
@@ -190,6 +195,7 @@ class TestExecutableOperations:
         with pytest.raises(ResourceError, match="File not found"):
             make_executable(test_file)
 
+    @pytest.mark.skipif(IS_WINDOWS, reason="chmod not supported on Windows")
     def test_is_executable_unix(self, tmp_path) -> None:
         """Test checking if file is executable on Unix."""
         test_file = tmp_path / "script.sh"

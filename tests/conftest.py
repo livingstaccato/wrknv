@@ -7,7 +7,31 @@
 
 from __future__ import annotations
 
+import sys
+
 import pytest
+
+# Platform detection
+IS_WINDOWS = sys.platform == "win32"
+IS_UNIX = sys.platform in ("linux", "darwin")
+
+
+def pytest_configure(config: pytest.Config) -> None:
+    """Register custom markers."""
+    config.addinivalue_line("markers", "unix_only: mark test to run only on Unix systems")
+    config.addinivalue_line("markers", "windows_only: mark test to run only on Windows")
+
+
+def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:
+    """Skip tests based on platform markers."""
+    skip_windows = pytest.mark.skip(reason="Test requires Unix (uses bash syntax or Unix paths)")
+    skip_unix = pytest.mark.skip(reason="Test requires Windows")
+
+    for item in items:
+        if "unix_only" in item.keywords and IS_WINDOWS:
+            item.add_marker(skip_windows)
+        if "windows_only" in item.keywords and IS_UNIX:
+            item.add_marker(skip_unix)
 
 # Import all test utilities to make them available
 from tests.utils.fixtures import (

@@ -7,12 +7,16 @@
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 import pytest
 
 from wrknv.tasks.executor import TaskExecutor
 from wrknv.tasks.schema import TaskConfig
+
+# Platform detection
+IS_WINDOWS = sys.platform == "win32"
 
 
 class TestExecutorWithArgs:
@@ -66,6 +70,7 @@ class TestExecutorWithArgs:
         assert "with spaces" in result.stdout
 
     @pytest.mark.asyncio
+    @pytest.mark.skipif(IS_WINDOWS, reason="Uses Unix shell special characters")
     async def test_execute_command_with_special_chars(self, tmp_path: Path) -> None:
         """Test that arguments with special characters are properly escaped."""
         task = TaskConfig(name="test", run="echo")
@@ -79,6 +84,7 @@ class TestExecutorWithArgs:
         assert "test" in result.stdout
 
     @pytest.mark.asyncio
+    @pytest.mark.skipif(IS_WINDOWS, reason="Uses bash command")
     async def test_execute_with_env_and_args(self, tmp_path: Path) -> None:
         """Test combining environment variables and arguments."""
         task = TaskConfig(name="test", run="bash -c 'echo $TEST_VAR'", env={"TEST_VAR": "from_task"})

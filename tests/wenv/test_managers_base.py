@@ -119,7 +119,8 @@ class TestVersionManagement(FoundationTestCase):
 class TestBinaryPaths(FoundationTestCase):
     """Test binary path methods."""
 
-    def test_get_binary_path(self, tmp_path: Path) -> None:
+    @patch("platform.system", return_value="Linux")
+    def test_get_binary_path(self, mock_platform: Mock, tmp_path: Path) -> None:
         """Test getting binary path for a version."""
         config = WorkenvConfig()
         config.workenv_cache_dir = str(tmp_path / "cache")
