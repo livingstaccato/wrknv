@@ -221,6 +221,8 @@ filterwarnings = [
     "ignore:cannot collect test class .* because it has a __init__ constructor:pytest.PytestCollectionWarning",
     "ignore:coroutine .* was never awaited:RuntimeWarning",
     "ignore:Module already imported so cannot be rewritten:pytest.PytestAssertRewriteWarning",
+    "ignore::pytest.PytestUnraisableExceptionWarning",
+    "ignore:Exception ignored in:pytest.PytestUnraisableExceptionWarning",
 ]
 norecursedirs = [
     ".git", ".hg", ".svn", "*_build", "build", "dist", "*.egg-info",
