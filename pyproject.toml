@@ -254,6 +254,9 @@ directory = "htmlcov"
 [tool.coverage.xml]
 output = "coverage.xml"
 
+[tool.bandit]
+exclude_dirs = [".venv", "tests", "workenv"]
+
 [dependency-groups]
 dev = [
     "provide-testkit[quality]",
