@@ -257,6 +257,8 @@ class WrknvDoctor:
     def _check_config_files(self) -> None:
         """Check for wrknv.toml configuration."""
         config_file = Path.cwd() / "wrknv.toml"
+        if not config_file.exists():
+            config_file = Path.cwd() / ".wrknv.toml"  # Fallback for backwards compat
 
         if not config_file.exists():
             self.checks_warning.append(("wrknv.toml", "Not found - using defaults"))
@@ -291,6 +293,8 @@ class WrknvDoctor:
     def _check_sibling_packages(self) -> None:
         """Check if configured sibling packages are accessible."""
         config_file = Path.cwd() / "wrknv.toml"
+        if not config_file.exists():
+            config_file = Path.cwd() / ".wrknv.toml"  # Fallback for backwards compat
         if not config_file.exists():
             return
 

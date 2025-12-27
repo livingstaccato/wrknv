@@ -396,7 +396,7 @@ class TfManager(BaseToolManager):
 
             project_dir = pathlib.Path.cwd()
             # Only regenerate if we're in a project directory
-            if (project_dir / "pyproject.toml").exists() or (project_dir / "wrknv.toml").exists():
+            if (project_dir / "pyproject.toml").exists() or (project_dir / "wrknv.toml").exists() or (project_dir / ".wrknv.toml").exists():
                 create_project_env_scripts(project_dir)
                 logger.debug("Regenerated env.sh with new version")
         except Exception as e:

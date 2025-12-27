@@ -149,8 +149,8 @@ class WorkenvConfig(RuntimeConfig):
         """Find configuration file in standard locations."""
         # Check standard locations
         locations = [
-            Path.cwd() / ".wrknv.toml",
             Path.cwd() / "wrknv.toml",
+            Path.cwd() / ".wrknv.toml",  # Hidden fallback for backwards compat
             Path.cwd() / "pyproject.toml",
             Path.home() / ".config" / "wrknv" / "config.toml",
             Path.home() / ".wrknv.toml",
@@ -162,7 +162,7 @@ class WorkenvConfig(RuntimeConfig):
                 return path
 
         # Return default location for new configs
-        return Path.cwd() / ".wrknv.toml"
+        return Path.cwd() / "wrknv.toml"
 
     def _create_manager(self) -> ConfigManager:
         """Create configuration manager."""
