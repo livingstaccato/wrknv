@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 import os
+import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -15,6 +16,9 @@ import pytest
 
 from wrknv.tasks.executor import TaskExecutor
 from wrknv.tasks.schema import TaskConfig
+
+# Platform detection
+IS_WINDOWS = sys.platform == "win32"
 
 
 class TestExecutorEnvironmentIntegration:
@@ -180,11 +184,12 @@ class TestExecutorEnvironmentIntegration:
         tmp_path: Path,
     ) -> None:
         """Test that executor modifies PATH when using direct execution."""
-        # Create a venv
+        # Create a venv with platform-appropriate bin directory
         venv_path = tmp_path / ".venv"
         venv_path.mkdir()
         (venv_path / "pyvenv.cfg").write_text("")
-        bin_dir = venv_path / "bin"
+        bin_name = "Scripts" if IS_WINDOWS else "bin"
+        bin_dir = venv_path / bin_name
         bin_dir.mkdir()
 
         task = TaskConfig(name="test", run="pytest tests/")
@@ -288,15 +293,17 @@ class TestExecutorEnvironmentIntegration:
         tmp_path: Path,
     ) -> None:
         """Test that task environment variables are preserved after PATH modification."""
-        # Create a venv
+        # Create a venv with platform-appropriate bin directory
         venv_path = tmp_path / ".venv"
         venv_path.mkdir()
         (venv_path / "pyvenv.cfg").write_text("")
-        (venv_path / "bin").mkdir()
+        bin_name = "Scripts" if IS_WINDOWS else "bin"
+        (venv_path / bin_name).mkdir()
 
+        # Use python -c instead of shell variable syntax for cross-platform compatibility
         task = TaskConfig(
             name="test",
-            run="echo $CUSTOM_VAR",
+            run="python -c \"import os; print(os.environ.get('CUSTOM_VAR', ''))\"",
             env={"CUSTOM_VAR": "custom_value"},
         )
         executor = TaskExecutor(

@@ -7,12 +7,16 @@
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 import pytest
 
 from wrknv.tasks.executor import TaskExecutor
 from wrknv.tasks.schema import TaskConfig
+
+# Platform detection
+IS_WINDOWS = sys.platform == "win32"
 
 
 class TestTaskExecutor:
@@ -65,6 +69,7 @@ class TestTaskExecutor:
         assert "error message" in result.stderr
 
     @pytest.mark.asyncio
+    @pytest.mark.skipif(IS_WINDOWS, reason="Uses bash shell variable syntax")
     async def test_execute_with_custom_env(self, tmp_path: Path) -> None:
         """Test executing with custom environment variables."""
         task = TaskConfig(
@@ -80,6 +85,7 @@ class TestTaskExecutor:
         assert result.success is True
 
     @pytest.mark.asyncio
+    @pytest.mark.skipif(IS_WINDOWS, reason="Uses bash shell variable syntax")
     async def test_execute_with_base_env(self, tmp_path: Path) -> None:
         """Test that base environment is merged with task environment."""
         task = TaskConfig(name="env", run="echo $BASE_VAR $TASK_VAR", env={"TASK_VAR": "task"})
