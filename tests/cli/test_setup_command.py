@@ -7,12 +7,19 @@
 
 from __future__ import annotations
 
+import os
+import sys
+
 import click.testing
 from provide.testkit import FoundationTestCase, isolated_cli_runner
 from provide.testkit.mocking import Mock, patch
 import pytest
 
 from wrknv.cli.hub_cli import create_cli
+
+# Platform detection
+IS_WINDOWS = sys.platform == "win32"
+IS_CI = os.environ.get("CI", "").lower() in ("true", "1", "yes") or os.environ.get("GITHUB_ACTIONS") == "true"
 
 
 def get_test_cli():
@@ -79,6 +86,7 @@ class TestSetupCommand(FoundationTestCase):
         assert result.exit_code != 0
         assert result.exception is not None
 
+    @pytest.mark.skipif(IS_WINDOWS, reason="Shell integration uses bash scripts")
     @patch("wrknv.cli.commands.setup.run")
     @patch("wrknv.cli.commands.setup._get_shell_integration_script_path")
     def test_setup_shell_integration_success(self, mock_get_path, mock_run) -> None:
@@ -169,6 +177,7 @@ class TestSetupCommand(FoundationTestCase):
                 or "failed" in result.output.lower()
             )
 
+    @pytest.mark.skipif(IS_WINDOWS, reason="Shell integration uses bash scripts")
     @patch("wrknv.cli.commands.setup.run")
     @patch("wrknv.cli.commands.setup._get_shell_integration_script_path")
     def test_setup_shell_integration_creates_aliases(self, mock_get_path, mock_run) -> None:
@@ -264,6 +273,7 @@ class TestSetupCommand(FoundationTestCase):
         assert result.exit_code == 0
         assert "complete -c wrknv" in result.output
 
+    @pytest.mark.skipif(IS_CI, reason="Completion install requires filesystem permissions that may not be available on CI")
     def test_setup_completions_install(self) -> None:
         """Test installing shell completions."""
         with patch("pathlib.Path.home") as mock_home:
@@ -292,6 +302,7 @@ class TestSetupCommandIntegration(FoundationTestCase):
         self.temp_dir = self.create_temp_dir()
         self.temp_path = self.temp_dir
 
+    @pytest.mark.skipif(IS_CI, reason="Integration test requires network access for venv creation")
     def test_setup_creates_workenv_structure(self) -> None:
         """Test that setup creates the expected directory structure."""
         with patch("pathlib.Path.cwd") as mock_cwd:
