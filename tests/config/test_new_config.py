@@ -24,7 +24,7 @@ class TestWorkenvConfig:
         """Should load with sensible defaults."""
         # Isolate test by mocking config file discovery to return non-existent file
         with patch.object(
-            WorkenvConfig, "_find_config_file", return_value=pathlib.Path("/nonexistent/.wrknv.toml")
+            WorkenvConfig, "_find_config_file", return_value=pathlib.Path("/nonexistent/wrknv.toml")
         ):
             config = WorkenvConfig.load()
 
@@ -83,7 +83,7 @@ auto_install = false
         """Should manage tool versions correctly."""
         # Isolate test by mocking config file discovery
         with patch.object(
-            WorkenvConfig, "_find_config_file", return_value=pathlib.Path("/nonexistent/.wrknv.toml")
+            WorkenvConfig, "_find_config_file", return_value=pathlib.Path("/nonexistent/wrknv.toml")
         ):
             config = WorkenvConfig.load()
 
@@ -109,7 +109,7 @@ auto_install = false
         """Should manage profiles correctly."""
         # Isolate test by mocking config file discovery
         with patch.object(
-            WorkenvConfig, "_find_config_file", return_value=pathlib.Path("/nonexistent/.wrknv.toml")
+            WorkenvConfig, "_find_config_file", return_value=pathlib.Path("/nonexistent/wrknv.toml")
         ):
             config = WorkenvConfig.load()
 
@@ -141,7 +141,7 @@ class TestWorkenvConfigMethods:
         """Should retrieve settings with dot notation."""
         # Isolate test by mocking config file discovery
         with patch.object(
-            WorkenvConfig, "_find_config_file", return_value=pathlib.Path("/nonexistent/.wrknv.toml")
+            WorkenvConfig, "_find_config_file", return_value=pathlib.Path("/nonexistent/wrknv.toml")
         ):
             config = WorkenvConfig.load()
 
@@ -159,7 +159,7 @@ class TestWorkenvConfigMethods:
         """Should validate configuration correctly."""
         # Isolate test by mocking config file discovery
         with patch.object(
-            WorkenvConfig, "_find_config_file", return_value=pathlib.Path("/nonexistent/.wrknv.toml")
+            WorkenvConfig, "_find_config_file", return_value=pathlib.Path("/nonexistent/wrknv.toml")
         ):
             config = WorkenvConfig.load()
 
