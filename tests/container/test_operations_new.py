@@ -16,6 +16,7 @@ from pathlib import Path
 
 from provide.foundation.process import CompletedProcess, ProcessError
 from provide.testkit.mocking import patch
+from unittest.mock import MagicMock
 from rich.console import Console
 
 from wrknv.container.operations.build import ContainerBuilder
@@ -193,8 +194,8 @@ class TestContainerExec(FoundationTestCase):
         assert mock_run.call_count == 2
 
     @patch("wrknv.container.runtime.docker.run")
-    @patch("os.system")
-    def test_enter_container(self, mock_system, mock_run) -> None:
+    @patch("subprocess.run")
+    def test_enter_container(self, mock_subprocess_run, mock_run) -> None:
         """Test entering container interactively."""
         # Mock container running and shell detection
         mock_run.side_effect = [
@@ -203,19 +204,24 @@ class TestContainerExec(FoundationTestCase):
             # Shell detection (test -f /bin/bash)
             CompletedProcess(args=["docker", "exec"], returncode=0, stdout="", stderr=""),
         ]
-        mock_system.return_value = 0
+        # Mock subprocess.run for the interactive exec (returns a mock result with returncode=0)
+        mock_subprocess_run.return_value = MagicMock(returncode=0)
 
         result = self.exec.enter(shell=None)
 
         assert result
         assert mock_run.call_count == 2  # Container running + shell detection
-        mock_system.assert_called_once()
-        system_cmd = mock_system.call_args[0][0]
-        assert "docker exec" in system_cmd
-        assert "-i" in system_cmd
-        assert "-t" in system_cmd
-        assert "test-container" in system_cmd
-        assert "/bin/bash" in system_cmd
+        mock_subprocess_run.assert_called_once()
+        # Check that subprocess.run was called with a list of args (not a shell string)
+        call_args = mock_subprocess_run.call_args
+        cmd_list = call_args[0][0]  # First positional arg is the command list
+        assert isinstance(cmd_list, list)
+        assert "docker" in cmd_list
+        assert "exec" in cmd_list
+        assert "-i" in cmd_list
+        assert "-t" in cmd_list
+        assert "test-container" in cmd_list
+        assert "/bin/bash" in cmd_list
 
 
 @pytest.mark.container
