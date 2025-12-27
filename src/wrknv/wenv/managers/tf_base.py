@@ -372,7 +372,7 @@ class TfVersionsManager(BaseToolManager):
             "binary_sha256": binary_hash,
             "signature_files": [str(f) for f in signature_files],
             "platform": self.get_platform_info(),
-            "wrknv_version": "0.1.0",  # Track which version of wrknv installed this
+            "wrknv_version": "0.3.0",  # Track which version of wrknv installed this
         }
 
         self._save_metadata()

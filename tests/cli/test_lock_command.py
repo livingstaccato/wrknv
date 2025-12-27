@@ -301,7 +301,7 @@ class TestLockShowCommand(FoundationTestCase):
             mock_lockfile = Mock()
             mock_lockfile.config_checksum = "abc123def456"
             mock_lockfile.created_at = "2024-01-01T00:00:00"
-            mock_lockfile.wrknv_version = "0.1.0"
+            mock_lockfile.wrknv_version = "0.3.0"
             mock_lockfile.resolved_tools = {"go": tool1, "terraform": tool2}
 
             mock_manager.load_lockfile.return_value = mock_lockfile
@@ -331,7 +331,7 @@ class TestLockShowCommand(FoundationTestCase):
             mock_lockfile = Mock()
             mock_lockfile.config_checksum = "abc123"
             mock_lockfile.created_at = "2024-01-01T00:00:00"
-            mock_lockfile.wrknv_version = "0.1.0"
+            mock_lockfile.wrknv_version = "0.3.0"
             mock_lockfile.resolved_tools = {}
 
             mock_manager.load_lockfile.return_value = mock_lockfile

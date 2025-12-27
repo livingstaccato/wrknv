@@ -49,7 +49,7 @@ uv add wrknv
 ```toml
 [project]
 dependencies = [
-    "wrknv>=0.1.0",
+    "wrknv>=0.3.0",
 ]
 ```
 

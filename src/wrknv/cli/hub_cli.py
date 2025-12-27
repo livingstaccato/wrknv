@@ -98,7 +98,7 @@ def create_cli() -> click.Command:
     # Create CLI with standard options
     cli = hub.create_cli(
         name="wrknv",
-        version="0.1.0",
+        version="0.3.0",
         help="wrknv provides cross-platform tool installation and version management "
         "for development environments, including Terraform, OpenTofu, Go, UV, and more.",
     )

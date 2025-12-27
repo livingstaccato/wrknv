@@ -95,7 +95,7 @@ DEFAULT_AUTO_UPDATE = False
 # CLI defaults
 # =================================
 DEFAULT_CLI_NAME = "wrknv"
-DEFAULT_CLI_VERSION = "0.1.0"
+DEFAULT_CLI_VERSION = "0.3.0"
 DEFAULT_CLI_HELP = (
     "wrknv provides cross-platform tool installation and version management "
     "for development environments, including Terraform, OpenTofu, Go, UV, and more."

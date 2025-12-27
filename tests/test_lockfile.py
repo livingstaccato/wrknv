@@ -70,7 +70,7 @@ class TestLockfile(FoundationTestCase):
         assert lockfile.config_checksum
         assert len(lockfile.config_checksum) == 12
         assert lockfile.created_at == "2025-01-01T00:00:00"
-        assert lockfile.wrknv_version == "0.1.0"
+        assert lockfile.wrknv_version == "0.3.0"
         assert len(lockfile.resolved_tools) == 0
 
     def test_add_resolved_tool(self) -> None:
@@ -136,7 +136,7 @@ class TestLockfile(FoundationTestCase):
         lockfile = Lockfile(
             config_checksum="abc123",
             created_at="2025-01-01T00:00:00",
-            wrknv_version="0.1.0",
+            wrknv_version="0.3.0",
         )
         lockfile.resolved_tools["uv"] = ResolvedTool(
             name="uv",
@@ -160,7 +160,7 @@ class TestLockfile(FoundationTestCase):
         data = {
             "config_checksum": "abc123",
             "created_at": "2025-01-01T00:00:00",
-            "wrknv_version": "0.1.0",
+            "wrknv_version": "0.3.0",
             "resolved_tools": {
                 "uv": {
                     "name": "uv",
@@ -177,7 +177,7 @@ class TestLockfile(FoundationTestCase):
 
         assert lockfile.config_checksum == "abc123"
         assert lockfile.created_at == "2025-01-01T00:00:00"
-        assert lockfile.wrknv_version == "0.1.0"
+        assert lockfile.wrknv_version == "0.3.0"
         assert "uv" in lockfile.resolved_tools
         tool = lockfile.resolved_tools["uv"]
         assert tool.version == "0.5.0"
@@ -193,7 +193,7 @@ class TestLockfile(FoundationTestCase):
 
         assert lockfile.config_checksum == "abc123"
         assert lockfile.created_at is None
-        assert lockfile.wrknv_version == "0.1.0"
+        assert lockfile.wrknv_version == "0.3.0"
         assert len(lockfile.resolved_tools) == 0
 
 
@@ -227,7 +227,7 @@ class TestLockfileManager(FoundationTestCase):
         data = {
             "config_checksum": "abc123",
             "created_at": "2025-01-01T00:00:00",
-            "wrknv_version": "0.1.0",
+            "wrknv_version": "0.3.0",
             "resolved_tools": {},
         }
         lockfile_path.write_text(json.dumps(data))

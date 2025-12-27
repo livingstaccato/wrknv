@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- N/A
+
+### Changed
+- N/A
+
+### Fixed
+- N/A
+
+## [0.3.0] - 2025-12-27
+
+### Added
 - Initial release of wrknv
 - Environment script generation for `env.sh` and `env.ps1`
 - Tool version management for UV, Terraform, OpenTofu, and Go
@@ -41,9 +52,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Release Notes
 
-### v0.0.0.dev0 (Development Release)
+### v0.3.0 (Initial Release)
 
-This is the initial development release of wrknv, providing comprehensive work environment management for the provide.io ecosystem.
+This is the initial release of wrknv, providing comprehensive work environment management for the provide.io ecosystem.
 
 **Core Features:**
 - **Environment Generation**: Creates standardized `env.sh` and `env.ps1` scripts from templates

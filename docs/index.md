@@ -25,7 +25,7 @@ $ pip install wrknv
 Successfully installed wrknv
 
 $ wrknv --version
-wrknv, version 0.1.0
+wrknv, version 0.3.0
 ```
 
 </div>

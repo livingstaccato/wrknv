@@ -37,7 +37,7 @@ class Lockfile:
     config_checksum: str  # Hash of the config that generated this lock
     resolved_tools: dict[str, ResolvedTool] = field(factory=dict)
     created_at: str | None = None  # ISO timestamp
-    wrknv_version: str = "0.1.0"
+    wrknv_version: str = "0.3.0"
 
     @classmethod
     def from_config(cls, config: WorkenvConfig) -> Lockfile:
@@ -121,7 +121,7 @@ class Lockfile:
             config_checksum=data["config_checksum"],
             resolved_tools=resolved_tools,
             created_at=data.get("created_at"),
-            wrknv_version=data.get("wrknv_version", "0.1.0"),
+            wrknv_version=data.get("wrknv_version", "0.3.0"),
         )
 
 

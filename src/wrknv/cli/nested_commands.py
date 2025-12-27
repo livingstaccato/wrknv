@@ -366,7 +366,7 @@ def register_nested_command(
 
 def create_nested_cli(
     name: str = "wrknv",
-    version: str = "0.1.0",
+    version: str = "0.3.0",
     help: str | None = None,
 ) -> click.Group:
     """
