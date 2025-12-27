@@ -7,12 +7,12 @@
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
+import sys
 from unittest.mock import MagicMock, Mock, patch
 
-import pytest
 from provide.testkit import FoundationTestCase
+import pytest
 
 from wrknv.wenv.managers.base import ToolManagerError
 from wrknv.wenv.managers.tf_base import TfVersionsManager

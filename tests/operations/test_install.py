@@ -14,8 +14,8 @@ import sys
 import tarfile
 import zipfile
 
-import pytest
 from provide.testkit.mocking import patch
+import pytest
 
 # Platform detection
 IS_WINDOWS = sys.platform == "win32"

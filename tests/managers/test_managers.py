@@ -6,12 +6,12 @@
 
 from __future__ import annotations
 
-import platform
 from pathlib import Path
+import platform
 
-import pytest
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import MagicMock, patch
+import pytest
 
 from wrknv.config import WorkenvConfig
 from wrknv.managers.base import BaseToolManager
