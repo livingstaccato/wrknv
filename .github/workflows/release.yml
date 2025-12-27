@@ -161,7 +161,7 @@ jobs:
       
       - name: Build binary with PyInstaller
         run: |
-          pyinstaller --onefile --name ${{ matrix.artifact }} --add-data "src/wrknv/templates:wrknv/templates" src/wrknv/env/cli.py
+          pyinstaller --onefile --name ${{ matrix.artifact }} --add-data "src/wrknv/templates:wrknv/templates" src/wrknv/cli/hub_cli.py
       
       - name: Test binary
         run: |

@@ -58,19 +58,12 @@ wrknv = "wrknv.cli:entry_point"
 "Documentation" = "https://github.com/livingstaccato/wrknv#readme"
 "Source Code" = "https://github.com/livingstaccato/wrknv"
 
-[tool.setuptools]
-packages = [
-    "wrknv",
-    "wrknv.cli",
-    "wrknv.wenv",
-    "wrknv.wenv.managers",
-    "wrknv.wenv.operations",
-    "wrknv.package"
-]
-package-dir = {"" = "src"}
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["wrknv*"]
 
 [tool.setuptools.package-data]
-wrknv = ["py.typed"]
+wrknv = ["py.typed", "templates/**/*.j2", "templates/**/*.toml"]
 
 [tool.setuptools.dynamic]
 version = {file = "VERSION"}
