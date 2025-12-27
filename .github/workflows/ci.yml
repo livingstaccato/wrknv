@@ -174,7 +174,8 @@ jobs:
           uv venv
           source .venv/bin/activate
           uv pip install -e ".[dev]"
-          uv build
+          uv pip install build
+          python -m build
       
       - name: Check distributions
         run: |
