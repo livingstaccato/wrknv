@@ -9,8 +9,8 @@ from __future__ import annotations
 
 import sys
 
-import pytest
 from provide.testkit.mocking import patch
+import pytest
 
 from wrknv.wenv.env_generator import EnvScriptGenerator, create_project_env_scripts
 
