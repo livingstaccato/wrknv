@@ -273,7 +273,9 @@ class TestSetupCommand(FoundationTestCase):
         assert result.exit_code == 0
         assert "complete -c wrknv" in result.output
 
-    @pytest.mark.skipif(IS_CI, reason="Completion install requires filesystem permissions that may not be available on CI")
+    @pytest.mark.skipif(
+        IS_CI, reason="Completion install requires filesystem permissions that may not be available on CI"
+    )
     def test_setup_completions_install(self) -> None:
         """Test installing shell completions."""
         with patch("pathlib.Path.home") as mock_home:
