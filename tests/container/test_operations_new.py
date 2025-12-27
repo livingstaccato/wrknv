@@ -353,7 +353,11 @@ class TestVolumeManager(FoundationTestCase):
         """Set up test fixtures."""
         super().setup_method()
         self.runtime = DockerRuntime(runtime_name="docker", runtime_command="docker")
-        self.volumes = VolumeManager(runtime=self.runtime, console=Console(), backup_dir=Path("/tmp/backups"))
+        # Use a temp directory that works cross-platform
+        import tempfile
+
+        self.backup_dir = Path(tempfile.gettempdir()) / "backups"
+        self.volumes = VolumeManager(runtime=self.runtime, console=Console(), backup_dir=self.backup_dir)
 
     @patch("wrknv.container.operations.volumes.run")
     def test_create_volume(self, mock_run) -> None:
@@ -404,7 +408,7 @@ class TestVolumeManager(FoundationTestCase):
         )
 
         assert backup_file is not None
-        assert str(backup_file).startswith("/tmp/backups")
+        assert str(backup_file).startswith(str(self.backup_dir))
         assert "test-volume" in str(backup_file)
         mock_run.assert_called_once()
         cmd = mock_run.call_args[0][0]

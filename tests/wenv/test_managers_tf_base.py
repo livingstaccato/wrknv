@@ -7,14 +7,18 @@
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 from unittest.mock import MagicMock, Mock, patch
 
-from provide.testkit import FoundationTestCase
 import pytest
+from provide.testkit import FoundationTestCase
 
 from wrknv.wenv.managers.base import ToolManagerError
 from wrknv.wenv.managers.tf_base import TfVersionsManager
+
+# Platform detection
+IS_WINDOWS = sys.platform == "win32"
 
 
 class ConcreteTfManager(TfVersionsManager):
@@ -408,6 +412,7 @@ class TestInstallation(FoundationTestCase):
 class TestGlobalVersion(FoundationTestCase):
     """Test global version management."""
 
+    @pytest.mark.skipif(IS_WINDOWS, reason="Test uses chmod which is Unix-specific")
     @patch("os.name", "posix")
     @patch("pathlib.Path.chmod")
     @patch("shutil.copy2")
@@ -471,6 +476,7 @@ class TestProfileManagement(FoundationTestCase):
 
         assert profile == "production"
 
+    @pytest.mark.skipif(IS_WINDOWS, reason="Uses Unix-style home directory expansion")
     @patch("pathlib.Path.exists", return_value=True)
     @patch("pathlib.Path.open")
     def test_get_current_profile_from_metadata(self, mock_open: Mock, mock_exists: Mock) -> None:

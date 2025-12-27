@@ -33,6 +33,7 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
         if "windows_only" in item.keywords and IS_UNIX:
             item.add_marker(skip_unix)
 
+
 # Import all test utilities to make them available
 from tests.utils.fixtures import (
     create_mock_builder,
