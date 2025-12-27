@@ -144,7 +144,7 @@ jobs:
           source .venv/bin/activate
           cd /tmp
           echo -e "test-project\n1.0.0\nINFO\nn\nn\nn\nn\n" | wrknv config init
-          cat wrknv.toml
+          cat .wrknv.toml
       
       - name: Test profile operations
         run: |
