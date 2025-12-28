@@ -187,3 +187,21 @@ jobs:
         with:
           name: dist
           path: dist/
+
+  build-psp:
+    name: Build PSP Binary
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: provide-io/ci-tooling/actions/build-psp@main
+        with:
+          manifest: pyproject.toml
+          output-path: dist/wrknv.psp
+          strip: true
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: psp
+          path: dist/*.psp
