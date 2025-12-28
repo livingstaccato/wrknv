@@ -28,9 +28,13 @@ jobs:
           workflow: ci.yml
           name: psp-.*
           name_is_regexp: true
-          path: dist/
-          merge_multiple: true
+          path: psp-artifacts/
         continue-on-error: true
+
+      - name: Flatten PSP artifacts
+        run: |
+          find psp-artifacts -name "*.psp" -exec mv {} dist/ \; 2>/dev/null || true
+          ls -la dist/
 
       - uses: actions/upload-artifact@v4
         with:
@@ -49,8 +53,14 @@ jobs:
           name: release-dist
           path: dist/
 
+      - name: List release files
+        run: ls -la dist/
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/*
+          files: |
+            dist/*.whl
+            dist/*.tar.gz
+            dist/*.psp
           generate_release_notes: true
