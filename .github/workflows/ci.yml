@@ -189,19 +189,31 @@ jobs:
           path: dist/
 
   build-psp:
-    name: Build PSP Binary
-    runs-on: ubuntu-latest
+    name: Build PSP (${{ matrix.target }})
+    runs-on: ${{ matrix.os }}
     needs: [lint, test]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            target: linux_amd64
+          - os: ubuntu-24.04-arm
+            target: linux_arm64
+          - os: macos-15-intel
+            target: darwin_amd64
+          - os: macos-15
+            target: darwin_arm64
     steps:
       - uses: actions/checkout@v4
 
       - uses: provide-io/ci-tooling/actions/build-psp@main
         with:
           manifest: pyproject.toml
-          output-path: dist/wrknv.psp
+          output-path: dist/wrknv_${{ matrix.target }}.psp
           strip: true
 
       - uses: actions/upload-artifact@v4
         with:
-          name: psp
+          name: psp-${{ matrix.target }}
           path: dist/*.psp

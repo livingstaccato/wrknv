@@ -26,8 +26,10 @@ jobs:
         uses: dawidd6/action-download-artifact@v6
         with:
           workflow: ci.yml
-          name: psp
+          name: psp-.*
+          name_is_regexp: true
           path: dist/
+          merge_multiple: true
         continue-on-error: true
 
       - uses: actions/upload-artifact@v4
