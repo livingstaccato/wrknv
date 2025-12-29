@@ -9,20 +9,35 @@ Manages OpenTofu versions for development environment."""
 
 from __future__ import annotations
 
+import asyncio
 import re
+from typing import TYPE_CHECKING
 
 from provide.foundation.logger import get_logger
-from provide.foundation.transport import get
 
 from wrknv.managers.base import ToolManagerError
+from wrknv.managers.github import GitHubReleasesClient
 from wrknv.managers.tf.base import TfManager
-from wrknv.managers.tf.utils import version_sort_key
+
+if TYPE_CHECKING:
+    from wrknv.config import WorkenvConfig
 
 logger = get_logger(__name__)
 
 
 class TofuTfVariant(TfManager):
     """OpenTofu Tf variant - manages OpenTofu versions using GitHub releases API with wrknv's directory structure."""
+
+    def __init__(self, config: WorkenvConfig | None = None) -> None:
+        super().__init__(config)
+        self._github_client: GitHubReleasesClient | None = None
+
+    @property
+    def github_client(self) -> GitHubReleasesClient:
+        """Get or create GitHub client for OpenTofu repository."""
+        if self._github_client is None:
+            self._github_client = GitHubReleasesClient("opentofu/opentofu")
+        return self._github_client
 
     @property
     def tool_name(self) -> str:
@@ -39,30 +54,12 @@ class TofuTfVariant(TfManager):
     def get_available_versions(self) -> list[str]:
         """Get available OpenTofu versions from GitHub releases."""
         try:
-            # Use custom mirror if configured
-            api_url = "https://api.github.com/repos/opentofu/opentofu/releases"
+            logger.debug("Fetching OpenTofu versions from GitHub")
 
-            logger.debug(f"Fetching OpenTofu versions from {api_url}")
+            include_prereleases = self.config.get_setting("include_prereleases", False)
 
-            response = get(api_url)
-            data = response.json()
-
-            versions = []
-            for release in data:
-                tag_name = release.get("tag_name", "")
-                if tag_name.startswith("v"):
-                    version = tag_name[1:]  # Remove 'v' prefix
-
-                    # Skip prereleases unless configured to include them
-                    if release.get("prerelease", False) and not self.config.get_setting(
-                        "include_prereleases", False
-                    ):
-                        continue
-
-                    versions.append(version)
-
-            # Sort versions in descending order (latest first)
-            versions.sort(key=version_sort_key, reverse=True)
+            # Use GitHub client to fetch versions
+            versions = asyncio.run(self.github_client.get_versions(include_prereleases=include_prereleases))
 
             logger.debug(f"Found {len(versions)} OpenTofu versions")
             return versions

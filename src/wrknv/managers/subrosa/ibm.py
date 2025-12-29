@@ -9,6 +9,7 @@ Manages IBM Vault (HashiCorp Vault) versions for development."""
 
 from __future__ import annotations
 
+import asyncio
 import pathlib
 
 from provide.foundation import logger
@@ -35,7 +36,7 @@ class IbmVaultVariant(SubRosaManager):
 
             logger.debug(f"Fetching Vault versions from {api_url}")
 
-            response = get(api_url)
+            response = asyncio.run(get(api_url))
             data = response.json()
 
             versions = []

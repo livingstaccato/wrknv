@@ -9,6 +9,7 @@ Manages Go versions for development."""
 
 from __future__ import annotations
 
+import asyncio
 import pathlib
 import re
 
@@ -37,7 +38,7 @@ class GoManager(BaseToolManager):
             logger.debug(f"Fetching Go versions from {api_url}")
 
             # Use foundation transport for unified HTTP handling
-            response = get(api_url)
+            response = asyncio.run(get(api_url))
             data = response.json()
 
             versions = []

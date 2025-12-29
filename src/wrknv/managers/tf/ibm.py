@@ -9,14 +9,17 @@ Manages IBM Terraform (formerly HashiCorp Terraform) versions for development en
 
 from __future__ import annotations
 
+import asyncio
 import re
 
-from provide.foundation import logger
+from provide.foundation.logger import get_logger
 from provide.foundation.transport import get
 
 from wrknv.managers.base import ToolManagerError
 from wrknv.managers.tf.base import TfManager
 from wrknv.managers.tf.utils import version_sort_key
+
+logger = get_logger(__name__)
 
 
 class IbmTfVariant(TfManager):
@@ -45,7 +48,7 @@ class IbmTfVariant(TfManager):
 
             logger.debug(f"Fetching IBM Terraform versions from {api_url}")
 
-            response = get(api_url)
+            response = asyncio.run(get(api_url))
             data = response.json()
 
             versions = []
