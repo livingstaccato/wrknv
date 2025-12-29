@@ -18,7 +18,6 @@ import sys
 from provide.foundation.cli import echo_error, echo_info, echo_success
 from provide.foundation.hub import register_command
 
-
 # --- Protocol Constants ---
 
 HEADER_SHEBANG = "#!/usr/bin/env python3"
@@ -281,7 +280,9 @@ def conform_command(files: list[str] | None = None, footer: str | None = None, c
                 body_lines = cleaned_lines_list[body_start_lineno - 1 :]
                 body_content = "".join(body_lines).rstrip()
                 body_content = _remove_footer_emojis(body_content)
-                final_content = _construct_file_content(header_first_line, docstring_str, body_content, effective_footer)
+                final_content = _construct_file_content(
+                    header_first_line, docstring_str, body_content, effective_footer
+                )
 
                 if final_content != content:
                     echo_info(f"Would fix: {filepath}")

@@ -52,6 +52,8 @@ def load_commands() -> None:
     # List of command modules to load
     command_modules = [
         "wrknv.cli.commands.config",
+        "wrknv.cli.commands.config_check",
+        "wrknv.cli.commands.conform",
         "wrknv.cli.commands.container",
         "wrknv.cli.commands.doctor",
         "wrknv.cli.commands.gitignore",
@@ -117,6 +119,8 @@ def intercept_task_command() -> bool:
     # Built-in commands that should not be intercepted
     BUILT_IN_COMMANDS = {
         "config",
+        "config-check",
+        "conform",
         "container",
         "doctor",
         "gitignore",
@@ -124,6 +128,7 @@ def intercept_task_command() -> bool:
         "profile",
         "run",
         "secrets",
+        "selftest",
         "setup",
         "terraform",
         "tools",
