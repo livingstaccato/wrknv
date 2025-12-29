@@ -11,7 +11,6 @@ from __future__ import annotations
 
 from pathlib import Path
 import sys
-from typing import Annotated
 
 from provide.foundation.cli import echo_error, echo_info, echo_success, echo_warning
 from provide.foundation.hub import register_command
@@ -149,7 +148,7 @@ def _validate_pyproject(filepath: Path) -> tuple[list[str], list[str]]:
 
 @register_command("config-check", description="Validate pyproject.toml configuration standardization")
 def config_check_command(
-    files: Annotated[tuple[str, ...], "argument"] = (),
+    path: str | None = None,
     strict: bool = False,
 ) -> None:
     """Validate pyproject.toml configuration matches provide.io standards.
@@ -158,12 +157,12 @@ def config_check_command(
     standards for the provide.io ecosystem.
 
     Args:
-        files: pyproject.toml files to check. If not provided, checks ./pyproject.toml
+        path: Path to pyproject.toml. Defaults to ./pyproject.toml
         strict: Treat warnings as errors
     """
     # Collect files to check
-    if files:
-        filepaths = [Path(f) for f in files]
+    if path:
+        filepaths = [Path(path)]
     else:
         pyproject = Path.cwd() / "pyproject.toml"
         if pyproject.exists():

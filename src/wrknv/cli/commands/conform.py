@@ -14,7 +14,6 @@ import json
 from pathlib import Path
 import subprocess
 import sys
-from typing import Annotated
 
 from provide.foundation.cli import echo_error, echo_info, echo_success
 from provide.foundation.hub import register_command
@@ -220,14 +219,14 @@ def _conform_file(filepath: Path, footer: str) -> bool:
 
 @register_command("conform", description="Enforce SPDX headers and footer conformance on Python files")
 def conform_command(
-    files: Annotated[tuple[str, ...], "argument"] = (),
+    pattern: str | None = None,
     footer: str | None = None,
     check: bool = False,
 ) -> None:
     """Enforce SPDX headers and footer conformance on Python files.
 
     Args:
-        files: Python files to process. If not provided, processes all .py files in src/ and tests/
+        pattern: Glob pattern for files (e.g., "src/**/*.py"). Defaults to src and tests directories.
         footer: Override footer pattern (auto-detects from repository by default)
         check: Only check, don't modify files (exit 1 if changes needed)
     """
@@ -241,12 +240,12 @@ def conform_command(
         echo_info(f"Using footer: {effective_footer}")
 
     # Collect files to process
-    if files:
-        filepaths = [Path(f) for f in files]
+    if pattern:
+        filepaths = list(Path.cwd().glob(pattern))
     else:
         filepaths = []
-        for pattern in ["src/**/*.py", "tests/**/*.py"]:
-            filepaths.extend(Path.cwd().glob(pattern))
+        for default_pattern in ["src/**/*.py", "tests/**/*.py"]:
+            filepaths.extend(Path.cwd().glob(default_pattern))
 
     if not filepaths:
         echo_info("No Python files found to process")
