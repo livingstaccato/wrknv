@@ -176,16 +176,15 @@ class CommandGroup:
                         default=param.default,
                         help=f"{param_name} option",
                     )(click_func)
+            # Create argument
+            elif param.annotation != inspect.Parameter.empty:
+                param_type = _extract_click_type(param.annotation)
+                click_func = click.argument(
+                    param_name,
+                    type=param_type,
+                )(click_func)
             else:
-                # Create argument
-                if param.annotation != inspect.Parameter.empty:
-                    param_type = _extract_click_type(param.annotation)
-                    click_func = click.argument(
-                        param_name,
-                        type=param_type,
-                    )(click_func)
-                else:
-                    click_func = click.argument(param_name)(click_func)
+                click_func = click.argument(param_name)(click_func)
 
         return click.Command(
             name=info.name,

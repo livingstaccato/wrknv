@@ -94,23 +94,22 @@ class ExecutionEnvironment:
         elif self.mode == "system":
             self.use_uv_run = False
             self.venv_path = None  # Ignore venv
-        else:  # mode == "auto"
-            # Auto-detection logic:
-            # If editable install detected -> use direct (PATH) to preserve it
-            # If UV project but not editable -> use uv run
-            # Otherwise -> use direct with PATH modification
-            if self.package_is_editable:
-                self.use_uv_run = False
-                logger.debug(
-                    "Editable install detected - using direct execution",
-                    package=self.package_name,
-                )
-            elif self.is_uv_project:
-                self.use_uv_run = True
-                logger.debug("UV project detected - using uv run")
-            else:
-                self.use_uv_run = False
-                logger.debug("Using direct execution with PATH modification")
+        # Auto-detection logic:
+        # If editable install detected -> use direct (PATH) to preserve it
+        # If UV project but not editable -> use uv run
+        # Otherwise -> use direct with PATH modification
+        elif self.package_is_editable:
+            self.use_uv_run = False
+            logger.debug(
+                "Editable install detected - using direct execution",
+                package=self.package_name,
+            )
+        elif self.is_uv_project:
+            self.use_uv_run = True
+            logger.debug("UV project detected - using uv run")
+        else:
+            self.use_uv_run = False
+            logger.debug("Using direct execution with PATH modification")
 
         logger.debug(
             "Environment detection complete",

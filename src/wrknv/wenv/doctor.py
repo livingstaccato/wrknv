@@ -115,11 +115,10 @@ class WrknvDoctor:
         for cmd, description in dependencies.items():
             if shutil.which(cmd):
                 self.checks_passed.append((f"{cmd}", f"{description} - Found"))
+            elif cmd in ["uv"]:
+                self.checks_failed.append((f"{cmd}", f"{description} - Required but not found"))
             else:
-                if cmd in ["uv"]:
-                    self.checks_failed.append((f"{cmd}", f"{description} - Required but not found"))
-                else:
-                    self.checks_warning.append((f"{cmd}", f"{description} - Optional but recommended"))
+                self.checks_warning.append((f"{cmd}", f"{description} - Optional but recommended"))
 
     def _check_workenv_structure(self) -> None:
         """Check if workenv directory exists and has correct structure."""

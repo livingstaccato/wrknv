@@ -164,10 +164,9 @@ def generate_env_command(
             if output != ps1_path:
                 safe_move(ps1_path, output)
                 ps1_path = output
-        else:
-            if output != sh_path:
-                safe_move(sh_path, output)
-                sh_path = output
+        elif output != sh_path:
+            safe_move(sh_path, output)
+            sh_path = output
 
         echo_info("\nTo use the environment:")
         echo_info(f"  source {output}")

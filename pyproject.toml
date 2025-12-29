@@ -106,11 +106,18 @@ force-sort-within-sections = true
 combine-as-imports = true
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["ANN001", "ANN002", "ANN003", "ANN201", "ANN202", "ANN204", "E402", "S105", "S106", "S110", "S112", "BLE001"]
-"src/wrknv/cli/**" = ["BLE001"]  # CLI commands legitimately catch broad exceptions for error handling
-"src/wrknv/container/**" = ["BLE001", "S604"]  # Container commands use shell and catch exceptions for UX
-"src/wrknv/wenv/operations/**" = ["BLE001", "S202", "S324"]  # Operations: tarfile, checksums, error handling
-"src/wrknv/managers/**" = ["BLE001"]  # Manager error handling
+"tests/**" = ["ANN001", "ANN002", "ANN003", "ANN201", "ANN202", "ANN204", "E402", "S105", "S106", "S110", "S112", "S324", "S604", "BLE001"]
+"src/wrknv/cli/**" = ["BLE001", "S604"]  # CLI commands legitimately catch broad exceptions and use shell for container entry
+"src/wrknv/container/**" = ["BLE001", "S202", "S604"]  # Container commands use shell, tarfile, and catch exceptions for UX
+"src/wrknv/package/**" = ["BLE001"]  # Package error handling
+"src/wrknv/wenv/**" = ["BLE001", "S110", "S202", "S324"]  # Wenv: tarfile, checksums, error handling
+"src/wrknv/managers/**" = ["BLE001", "S110"]  # Manager error handling
+"src/wrknv/workspace/**" = ["BLE001"]  # Workspace error handling
+"src/wrknv/tasks/**" = ["BLE001", "S110", "S604"]  # Tasks module error handling, shell execution
+"src/wrknv/utils/**" = ["BLE001", "S110"]  # Utils error handling
+"src/wrknv/lockfile.py" = ["BLE001", "S112"]  # Lockfile error handling
+"src/wrknv/gitignore/**" = ["BLE001"]  # Gitignore error handling
+"src/wrknv/config/**" = ["BLE001"]  # Config error handling
 
 [tool.ruff.lint.mccabe]
 max-complexity = 25

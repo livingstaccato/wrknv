@@ -324,7 +324,6 @@ class TestSetupCommandIntegration(FoundationTestCase):
                     if not isinstance(e, ValueError) or "I/O operation" not in str(e):
                         raise
                     # Otherwise, just check if the workenv was created
-                    pass
 
                 # Check that workenv directory was created
                 workenv_dir = self.temp_path / "workenv"

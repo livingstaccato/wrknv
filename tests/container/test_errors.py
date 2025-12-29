@@ -9,8 +9,6 @@ Comprehensive tests for all container error classes."""
 
 from __future__ import annotations
 
-from typing import Never
-
 import pytest
 
 from wrknv.container.errors import (
@@ -40,7 +38,7 @@ class TestContainerNotFoundError:
         assert "Container 'test-container' not found" in str(error)
         assert error.container_name == "test-container"
 
-    def test_container_not_found_error_instance(self) -> Never:
+    def test_container_not_found_error_instance(self) -> None:
         """Test that error can be instantiated and raised."""
         with pytest.raises(ContainerNotFoundError) as exc_info:
             raise ContainerNotFoundError("missing-container")
@@ -62,7 +60,7 @@ class TestContainerNotRunningError:
         assert "Container 'idle-container' is not running" in str(error)
         assert error.container_name == "idle-container"
 
-    def test_container_not_running_error_instance(self) -> Never:
+    def test_container_not_running_error_instance(self) -> None:
         """Test that error can be raised."""
         with pytest.raises(ContainerNotRunningError) as exc_info:
             raise ContainerNotRunningError("my-container")
@@ -84,7 +82,7 @@ class TestContainerAlreadyExistsError:
         assert "Container 'existing-container' already exists" in str(error)
         assert error.container_name == "existing-container"
 
-    def test_container_already_exists_error_instance(self) -> Never:
+    def test_container_already_exists_error_instance(self) -> None:
         """Test that error can be raised."""
         with pytest.raises(ContainerAlreadyExistsError) as exc_info:
             raise ContainerAlreadyExistsError("my-container")
@@ -106,7 +104,7 @@ class TestImageNotFoundError:
         assert "Image 'nginx:latest' not found" in str(error)
         assert error.image_name == "nginx:latest"
 
-    def test_image_not_found_error_instance(self) -> Never:
+    def test_image_not_found_error_instance(self) -> None:
         """Test that error can be raised."""
         with pytest.raises(ImageNotFoundError) as exc_info:
             raise ImageNotFoundError("alpine:3.18")
@@ -128,7 +126,7 @@ class TestVolumeNotFoundError:
         assert "Volume 'data-volume' not found" in str(error)
         assert error.volume_name == "data-volume"
 
-    def test_volume_not_found_error_instance(self) -> Never:
+    def test_volume_not_found_error_instance(self) -> None:
         """Test that error can be raised."""
         with pytest.raises(VolumeNotFoundError) as exc_info:
             raise VolumeNotFoundError("missing-volume")
@@ -158,7 +156,7 @@ class TestContainerRuntimeError:
         assert "Container runtime 'podman' is not available" in str(error)
         assert error.runtime == "podman"
 
-    def test_runtime_error_instance(self) -> Never:
+    def test_runtime_error_instance(self) -> None:
         """Test that error can be raised."""
         with pytest.raises(ContainerRuntimeError) as exc_info:
             raise ContainerRuntimeError("docker", reason="not installed")
@@ -189,7 +187,7 @@ class TestContainerBuildError:
         assert "Failed to build image 'webapp:dev'" in str(error)
         assert error.image_tag == "webapp:dev"
 
-    def test_build_error_instance(self) -> Never:
+    def test_build_error_instance(self) -> None:
         """Test that error can be raised."""
         with pytest.raises(ContainerBuildError) as exc_info:
             raise ContainerBuildError("broken:latest", reason="missing base image")

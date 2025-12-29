@@ -257,7 +257,6 @@ class TestVolumeManagement:
 
         # Method not implemented yet
         # volumes = container_manager.list_volumes()
-        pass
 
     def test_backup_volumes(self, container_manager, test_storage_path) -> None:
         """Test backing up container volumes."""
@@ -470,7 +469,6 @@ class TestContainerStorageIntegration:
         """Test full container lifecycle with persistent volumes."""
         # This would be a full integration test
         # Requires Docker to be installed and running
-        pass
 
 
 # 🧰🌍🔚

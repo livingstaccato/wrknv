@@ -363,7 +363,6 @@ def pytest_configure_fixtures(config) -> None:
     Add this to conftest.py:
         from tests.utils.fixtures import *
     """
-    pass
 
 
 # 🧰🌍🔚

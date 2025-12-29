@@ -28,23 +28,12 @@ class WorkenvManager:
         system = platform.system().lower()
         machine = platform.machine().lower()
 
-        # Normalize platform names
-        if system == "darwin":
-            system = "darwin"
-        elif system == "linux":
-            system = "linux"
-        elif system == "windows":
-            system = "windows"
-        else:
-            system = system
-
-        # Normalize architecture
+        # Normalize architecture names
         if machine in ("x86_64", "amd64"):
             machine = "amd64"
         elif machine in ("arm64", "aarch64"):
             machine = "arm64"
-        else:
-            machine = machine
+        # Note: system (darwin/linux/windows) already normalized by platform.system().lower()
 
         return f"wrknv_{system}_{machine}"
 

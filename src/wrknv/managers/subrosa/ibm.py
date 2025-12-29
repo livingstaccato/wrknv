@@ -75,7 +75,7 @@ class IbmVaultVariant(SubRosaManager):
         # HashiCorp uses different arch naming for ARM
         if arch == "arm64":
             hc_arch = "arm64"
-        elif arch == "amd64" or arch == "x86_64":
+        elif arch in {"amd64", "x86_64"}:
             hc_arch = "amd64"
         else:
             hc_arch = arch

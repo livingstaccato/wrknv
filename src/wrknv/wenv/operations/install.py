@@ -41,7 +41,7 @@ def extract_archive(archive_path: pathlib.Path, extract_dir: pathlib.Path) -> No
     archive_name = archive_path.name.lower()
 
     try:
-        if archive_name.endswith(".tar.gz") or archive_name.endswith(".tgz"):
+        if archive_name.endswith((".tar.gz", ".tgz")):
             # Use foundation's extract_tar_gz with built-in path traversal protection
             ArchiveOperations.extract_tar_gz(archive_path, extract_dir)
         elif archive_name.endswith(".tar"):

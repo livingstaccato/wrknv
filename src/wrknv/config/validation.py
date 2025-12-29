@@ -96,9 +96,8 @@ class WorkenvConfigValidator:
             for i, part in enumerate(parts):
                 if i < 2:  # Major and minor must be numeric
                     int(part)
-                else:  # Patch and build can be numeric or alphanumeric
-                    if not (part.isdigit() or part.replace("_", "").replace("-", "").isalnum()):
-                        return False
+                elif not (part.isdigit() or part.replace("_", "").replace("-", "").isalnum()):
+                    return False
             return True
         except ValueError:
             return False
