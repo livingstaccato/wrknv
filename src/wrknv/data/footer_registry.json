@@ -1,0 +1,25 @@
+{
+  "repositories": {
+    "bfiles": "# 📁🔍🔚",
+    "ci-tooling": "# 🧰⚙️🔚",
+    "flavorpack": "# 🌶️📦🔚",
+    "messometer": "# 📊📞🔚",
+    "plating": "# 🍽️📖🔚",
+    "provide-foundation": "# 🐍🏗️⚙️🔚",
+    "provide-foundry": "# 🏗️📚🔚",
+    "provide-testkit": "# 🧪✅🔚",
+    "provide-workspace": "# 🌍🪄🔚",
+    "pyvider": "# 🐍🔌🔚",
+    "pyvider-components": "# 🐍🔌🧩🔚",
+    "pyvider-cty": "# 🐍🔌🧱🔚",
+    "pyvider-hcl": "# 🐍🔌📄🔚",
+    "pyvider-rpcplugin": "# 🐍🔌📞🔚",
+    "supsrc": "# 🔼📁🔚",
+    "terraform-provider-pyvider": "# 🔌🌍🔚",
+    "terraform-provider-tofusoup": "# 🥣🔌🔚",
+    "tofusoup": "# 🥣🌊🔚",
+    "wrknv": "# 🔧🌍🔚"
+  },
+  "default_footer": "# 🔚",
+  "version": "1.0.0"
+}
