@@ -3,9 +3,9 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-"""Config Check Commands
-=====================
-Commands for validating pyproject.toml configuration standardization."""
+"""Pyproject Commands
+==================
+Commands for validating pyproject.toml against provide.io standards."""
 
 from __future__ import annotations
 
@@ -146,8 +146,8 @@ def _validate_pyproject(filepath: Path) -> tuple[list[str], list[str]]:
     return errors, warnings
 
 
-@register_command("config-check", description="Validate pyproject.toml configuration standardization")
-def config_check_command(
+@register_command("pyproject", description="Validate pyproject.toml against provide.io standards")
+def pyproject_command(
     path: str | None = None,
     strict: bool = False,
 ) -> None:
