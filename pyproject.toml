@@ -81,11 +81,10 @@ include = '\.pyi?$'
 line-length = 111
 indent-width = 4
 target-version = "py311"
-extend-exclude = ["scraps"]
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "I", "UP", "ANN", "B", "C90", "SIM", "PTH", "RUF"]
-ignore = ["ANN401", "B008", "E501"]
+select = ["E", "F", "W", "I", "UP", "ANN", "B", "BLE", "C90", "PIE", "PLR", "S", "SIM", "PTH", "RUF"]
+ignore = ["ANN401", "B008", "E501", "S101", "PLR0913", "PLR2004"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["wrknv", "tests"]
