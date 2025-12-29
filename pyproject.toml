@@ -68,11 +68,6 @@ wrknv = ["py.typed", "templates/**/*.j2", "templates/**/*.toml"]
 [tool.setuptools.dynamic]
 version = {file = "VERSION"}
 
-[tool.black]
-line-length = 111
-target-version = ['py311', 'py312', 'py313']
-include = '\.pyi?$'
-
 ################################################################################
 # Ruff Linter and Formatter Configuration
 ################################################################################
