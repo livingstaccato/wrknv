@@ -101,7 +101,7 @@ force-sort-within-sections = true
 combine-as-imports = true
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["ANN001", "ANN002", "ANN003", "ANN201", "ANN202", "ANN204", "E402", "S105", "S106", "S110", "S112", "S324", "S604", "BLE001"]
+"tests/**" = ["ANN001", "ANN002", "ANN003", "ANN201", "ANN202", "ANN204", "E402", "S105", "S106", "S110", "S112", "S324", "S604", "BLE001", "S311", "PLR0124"]
 "src/wrknv/cli/**" = ["BLE001", "S604"]  # CLI commands legitimately catch broad exceptions and use shell for container entry
 "src/wrknv/container/**" = ["BLE001", "S202", "S604"]  # Container commands use shell, tarfile, and catch exceptions for UX
 "src/wrknv/package/**" = ["BLE001"]  # Package error handling
