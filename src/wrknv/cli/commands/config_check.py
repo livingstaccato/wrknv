@@ -11,6 +11,7 @@ from __future__ import annotations
 
 from pathlib import Path
 import sys
+from typing import Annotated
 
 from provide.foundation.cli import echo_error, echo_info, echo_success, echo_warning
 from provide.foundation.hub import register_command
@@ -147,7 +148,10 @@ def _validate_pyproject(filepath: Path) -> tuple[list[str], list[str]]:
 
 
 @register_command("config-check", description="Validate pyproject.toml configuration standardization")
-def config_check_command(files: list[str] | None = None, strict: bool = False) -> None:
+def config_check_command(
+    files: Annotated[tuple[str, ...], "argument"] = (),
+    strict: bool = False,
+) -> None:
     """Validate pyproject.toml configuration matches provide.io standards.
 
     Checks that ruff, mypy, and pytest configurations match the canonical

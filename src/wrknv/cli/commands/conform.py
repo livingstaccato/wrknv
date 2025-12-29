@@ -14,6 +14,7 @@ import json
 from pathlib import Path
 import subprocess
 import sys
+from typing import Annotated
 
 from provide.foundation.cli import echo_error, echo_info, echo_success
 from provide.foundation.hub import register_command
@@ -218,7 +219,11 @@ def _conform_file(filepath: Path, footer: str) -> bool:
 
 
 @register_command("conform", description="Enforce SPDX headers and footer conformance on Python files")
-def conform_command(files: list[str] | None = None, footer: str | None = None, check: bool = False) -> None:
+def conform_command(
+    files: Annotated[tuple[str, ...], "argument"] = (),
+    footer: str | None = None,
+    check: bool = False,
+) -> None:
     """Enforce SPDX headers and footer conformance on Python files.
 
     Args:
