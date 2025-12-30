@@ -145,6 +145,7 @@ class TaskConfig:
     process_title_format: str = "full"  # How to format process title: "full", "leaf", "abbreviated"
     command_prefix: str | None = None  # Optional command prefix (e.g., "uv run")
     execution_mode: str = "auto"  # Execution mode: "auto", "uv_run", "direct", "system"
+    parallel: bool = False  # Enable parallel execution for composite tasks
 
     @property
     def is_composite(self) -> bool:

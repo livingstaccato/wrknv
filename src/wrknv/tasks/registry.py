@@ -120,6 +120,7 @@ class TaskRegistry:
                     process_title_format=old_task.process_title_format,
                     command_prefix=old_task.command_prefix,
                     execution_mode=old_task.execution_mode,
+                    parallel=old_task.parallel,
                 )
 
         # Extract configuration metadata for environment detection
@@ -211,6 +212,7 @@ class TaskRegistry:
                 process_title_format=value.get("process_title_format", "full"),
                 command_prefix=value.get("command_prefix"),
                 execution_mode=value.get("execution_mode", "auto"),
+                parallel=value.get("parallel", False),
             )
 
         return None
