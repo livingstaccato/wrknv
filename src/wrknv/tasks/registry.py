@@ -369,6 +369,9 @@ class TaskRegistry:
     ) -> TaskResult:
         """Run a composite task that executes other tasks.
 
+        If task.parallel=True, runs subtasks concurrently using asyncio.gather().
+        Otherwise, uses sequential fail-fast execution (backward compatible).
+
         Args:
             task: Composite task to execute
             dry_run: If True, show what would be executed
@@ -377,26 +380,107 @@ class TaskRegistry:
         Returns:
             TaskResult aggregating all subtask results
         """
+        import asyncio
+        import time
+
         assert isinstance(task.run, list)
+        start_time = time.time()
 
-        results = []
-        for subtask_name in task.run:
-            result = await self.run_task(subtask_name, args=None, dry_run=dry_run, env=env)
-            results.append(result)
+        if task.parallel:
+            # PARALLEL MODE: Run all subtasks concurrently
+            from provide.foundation import logger
 
-            if not result.success:
-                # Stop on first failure
-                break
+            logger.info(
+                "Running composite task in parallel",
+                task=task.full_name,
+                subtasks=task.run,
+                subtask_count=len(task.run),
+            )
 
-        # Aggregate results
-        success = all(r.success for r in results)
-        exit_code = 0 if success else 1
+            async def run_subtask(subtask_name: str) -> TaskResult:
+                """Run a single subtask and return its result."""
+                try:
+                    return await self.run_task(subtask_name, args=None, dry_run=dry_run, env=env)
+                except Exception as e:
+                    # Catch exceptions to ensure one failure doesn't cancel others
+                    logger.error(
+                        f"Exception in parallel subtask: {subtask_name}",
+                        task=task.full_name,
+                        subtask=subtask_name,
+                        error=str(e),
+                    )
 
-        return TaskResult(
-            task=task,
-            success=success,
-            exit_code=exit_code,
-            stdout="",
-            stderr="",
-            duration=sum(r.duration for r in results),
-        )
+                    # Create error result for this subtask
+                    error_task = TaskConfig(name=subtask_name, run=f"# Error: {e}")
+                    return TaskResult(
+                        task=error_task,
+                        success=False,
+                        exit_code=-1,
+                        stdout="",
+                        stderr=str(e),
+                        duration=0.0,
+                    )
+
+            # Run all subtasks in parallel using asyncio.gather
+            results = await asyncio.gather(*[run_subtask(name) for name in task.run])
+
+            # Aggregate results - NO FAIL-FAST
+            success = all(r.success for r in results)
+            exit_code = 0 if success else 1
+
+            # Build stderr message listing all failures
+            failed_subtasks = [r.task.name for r in results if not r.success]
+            if failed_subtasks:
+                stderr_msg = f"Parallel task '{task.full_name}' had {len(failed_subtasks)} failure(s): {', '.join(failed_subtasks)}\n"
+                stderr_parts = [stderr_msg]
+                for r in results:
+                    if not r.success and r.stderr:
+                        stderr_parts.append(f"\n--- {r.task.name} stderr ---\n{r.stderr}")
+                combined_stderr = "".join(stderr_parts)
+            else:
+                combined_stderr = ""
+
+            duration = time.time() - start_time
+
+            logger.info(
+                "Parallel composite task completed",
+                task=task.full_name,
+                success=success,
+                succeeded=sum(1 for r in results if r.success),
+                failed=len(failed_subtasks),
+                duration=f"{duration:.2f}s",
+            )
+
+            return TaskResult(
+                task=task,
+                success=success,
+                exit_code=exit_code,
+                stdout="",
+                stderr=combined_stderr,
+                duration=duration,
+            )
+
+        else:
+            # SEQUENTIAL MODE: Original fail-fast behavior (backward compatible)
+            results = []
+            for subtask_name in task.run:
+                result = await self.run_task(subtask_name, args=None, dry_run=dry_run, env=env)
+                results.append(result)
+
+                if not result.success:
+                    # Stop on first failure
+                    break
+
+            # Aggregate results
+            success = all(r.success for r in results)
+            exit_code = 0 if success else 1
+            duration = time.time() - start_time
+
+            return TaskResult(
+                task=task,
+                success=success,
+                exit_code=exit_code,
+                stdout="",
+                stderr="",
+                duration=duration,
+            )

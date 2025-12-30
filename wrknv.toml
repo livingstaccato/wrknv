@@ -75,7 +75,8 @@ run = [
     "lint",
     "typecheck",
 ]
-description = "Run all quality checks"
+parallel = true
+description = "Run all quality checks in parallel"
 _default = [
     "lint",
     "typecheck",
