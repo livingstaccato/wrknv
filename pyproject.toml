@@ -15,6 +15,7 @@ description = "wrknv - Task automation and development environment tooling"
 authors = [
     { name = "Tim Perkins", email = "code@tim.life" },
 ]
+keywords = ["automation", "tasks", "cli", "developer-tools", "environment"]
 readme = "README.md"
 license = "Apache-2.0"
 classifiers = [
