@@ -296,7 +296,7 @@ class ContainerManager:
                         "Skipped potentially unsafe tar members",
                         skipped_count=skipped,
                     )
-                tar.extractall(container_dir, members=safe_members)
+                tar.extractall(container_dir, members=safe_members)  # nosec B202 - members validated by is_safe_path above
 
             logger.info("📥 Restored volumes from backup", backup=str(backup_path))
             return True
