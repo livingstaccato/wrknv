@@ -36,23 +36,18 @@ class TestGoManagerProperties(FoundationTestCase):
 class TestGetAvailableVersions(FoundationTestCase):
     """Test get_available_versions method."""
 
-    @patch("wrknv.wenv.managers.go.urlopen")
-    def test_get_available_versions_success(self, mock_urlopen: Mock) -> None:
+    def test_get_available_versions_success(self) -> None:
         """Test fetching versions from Go API."""
         # Mock API response - Go API returns releases with 'go' prefix
-        mock_response = MagicMock()
-        mock_response.read.return_value = json.dumps(
-            [
-                {"version": "go1.22.0", "stable": True},
-                {"version": "go1.21.5", "stable": True},
-                {"version": "go1.21.4", "stable": True},
-            ]
-        ).encode()
-        mock_response.__enter__.return_value = mock_response
-        mock_urlopen.return_value = mock_response
+        mock_data = [
+            {"version": "go1.22.0", "stable": True},
+            {"version": "go1.21.5", "stable": True},
+            {"version": "go1.21.4", "stable": True},
+        ]
 
         manager = GoManager()
-        versions = manager.get_available_versions()
+        with patch.object(manager, "fetch_json_secure", return_value=mock_data):
+            versions = manager.get_available_versions()
 
         assert isinstance(versions, list)
         # Versions should have 'go' prefix stripped
@@ -62,51 +57,43 @@ class TestGetAvailableVersions(FoundationTestCase):
         # Should NOT have 'go' prefix
         assert "go1.22.0" not in versions
 
-    @patch("wrknv.wenv.managers.go.urlopen")
-    def test_get_available_versions_includes_unstable(self, mock_urlopen: Mock) -> None:
+    def test_get_available_versions_includes_unstable(self) -> None:
         """Test fetching versions including unstable when configured."""
-        mock_response = MagicMock()
-        mock_response.read.return_value = json.dumps(
-            [
-                {"version": "go1.22.0", "stable": True},
-                {"version": "go1.22rc1", "stable": False},
-            ]
-        ).encode()
-        mock_response.__enter__.return_value = mock_response
-        mock_urlopen.return_value = mock_response
+        mock_data = [
+            {"version": "go1.22.0", "stable": True},
+            {"version": "go1.22rc1", "stable": False},
+        ]
 
         manager = GoManager()
-        # Mock the config setting check
-        with patch.object(manager.config, "get_setting", return_value=True):
+        # Mock the config setting check and fetch
+        with (
+            patch.object(manager, "fetch_json_secure", return_value=mock_data),
+            patch.object(manager.config, "get_setting", return_value=True),
+        ):
             versions = manager.get_available_versions()
             assert "1.22rc1" in versions
 
-    @patch("wrknv.wenv.managers.go.urlopen")
-    def test_get_available_versions_filters_unstable(self, mock_urlopen: Mock) -> None:
+    def test_get_available_versions_filters_unstable(self) -> None:
         """Test that unstable versions are filtered by default."""
-        mock_response = MagicMock()
-        mock_response.read.return_value = json.dumps(
-            [
-                {"version": "go1.22.0", "stable": True},
-                {"version": "go1.22rc1", "stable": False},
-            ]
-        ).encode()
-        mock_response.__enter__.return_value = mock_response
-        mock_urlopen.return_value = mock_response
+        mock_data = [
+            {"version": "go1.22.0", "stable": True},
+            {"version": "go1.22rc1", "stable": False},
+        ]
 
         manager = GoManager()
-        versions = manager.get_available_versions()
+        with patch.object(manager, "fetch_json_secure", return_value=mock_data):
+            versions = manager.get_available_versions()
 
         # Unstable should be filtered out by default
         assert "1.22.0" in versions
         assert "1.22rc1" not in versions
 
-    @patch("wrknv.wenv.managers.go.urlopen", side_effect=Exception("Network error"))
-    def test_get_available_versions_network_failure(self, mock_urlopen: Mock) -> None:
+    def test_get_available_versions_network_failure(self) -> None:
         """Test handling network failures."""
         manager = GoManager()
-        with pytest.raises(ToolManagerError, match="Failed to fetch Go versions"):
-            manager.get_available_versions()
+        with patch.object(manager, "fetch_json_secure", side_effect=Exception("Network error")):
+            with pytest.raises(ToolManagerError, match="Failed to fetch Go versions"):
+                manager.get_available_versions()
 
 
 class TestGetDownloadUrl(FoundationTestCase):
