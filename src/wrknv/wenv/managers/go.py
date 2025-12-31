@@ -7,10 +7,8 @@ Go Tool Manager for wrknv
 Manages Go versions for development.
 """
 
-import json
 import pathlib
 import re
-from urllib.request import urlopen
 
 from provide.foundation import logger
 from provide.foundation.process import run as process_run
@@ -33,11 +31,7 @@ class GoManager(BaseToolManager):
         """Get available Go versions from official API."""
         try:
             api_url = "https://go.dev/dl/?mode=json"
-
-            logger.debug(f"Fetching Go versions from {api_url}")
-
-            with urlopen(api_url) as response:
-                data = json.loads(response.read())
+            data = self.fetch_json_secure(api_url)
 
             versions = []
             for release in data:

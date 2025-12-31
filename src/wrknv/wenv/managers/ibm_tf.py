@@ -7,9 +7,7 @@ IBM Terraform Tool Manager for wrknv
 Manages IBM Terraform (formerly HashiCorp Terraform) versions for development environment.
 """
 
-import json
 import re
-from urllib.request import urlopen
 
 from provide.foundation import logger
 from provide.foundation.process import run as process_run
@@ -41,11 +39,7 @@ class IbmTfManager(TfVersionsManager):
                 "terraform_mirror", "https://releases.hashicorp.com/terraform"
             )
             api_url = f"{mirror_url.rstrip('/')}/index.json"
-
-            logger.debug(f"Fetching IBM Terraform versions from {api_url}")
-
-            with urlopen(api_url) as response:
-                data = json.loads(response.read())
+            data = self.fetch_json_secure(api_url)
 
             versions = []
             for version_info in data.get("versions", {}).values():

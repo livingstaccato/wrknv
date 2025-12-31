@@ -7,9 +7,7 @@ OpenTofu Tool Manager for wrknv
 Manages OpenTofu versions for development environment.
 """
 
-import json
 import re
-from urllib.request import urlopen
 
 from provide.foundation import logger
 from provide.foundation.process import run as process_run
@@ -36,13 +34,8 @@ class TofuManager(TfVersionsManager):
     def get_available_versions(self) -> list[str]:
         """Get available OpenTofu versions from GitHub releases."""
         try:
-            # Use custom mirror if configured
             api_url = "https://api.github.com/repos/opentofu/opentofu/releases"
-
-            logger.debug(f"Fetching OpenTofu versions from {api_url}")
-
-            with urlopen(api_url) as response:
-                data = json.loads(response.read())
+            data = self.fetch_json_secure(api_url)
 
             versions = []
             for release in data:
