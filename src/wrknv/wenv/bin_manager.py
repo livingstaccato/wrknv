@@ -47,9 +47,9 @@ def get_workenv_bin_dir(config: Any | None) -> pathlib.Path:
                     workenv_dir_name = getattr(config, "workenv_dir_name", None)
 
             if workenv_dir_name:
-                bin_dir = project_root / workenv_dir_name / "bin"
-                if bin_dir.exists():
-                    return bin_dir
+                workenv_bin: pathlib.Path = project_root / workenv_dir_name / "bin"
+                if workenv_bin.exists():
+                    return workenv_bin
 
         # Fallback to .local/bin
         bin_dir = pathlib.Path.home() / ".local" / "bin"

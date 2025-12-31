@@ -21,7 +21,7 @@ from .manager import PackageManager
 def _check_flavor_installed() -> None:
     """Check if flavorpack is installed."""
     try:
-        import flavor  # noqa: F401
+        import flavor  # noqa: F401  # type: ignore[import-not-found]
     except ImportError as e:
         raise ImportError("flavorpack not installed. Install it with: uv pip install flavorpack") from e
 
@@ -62,7 +62,8 @@ def build_package(
             show_progress=True,
         )
         logger.info(f"Successfully built {len(packages)} package(s)")
-        return packages
+        built_packages: list[Path] = packages
+        return built_packages
     except Exception as e:
         logger.error(f"Build failed: {e}")
         raise RuntimeError(f"Package build failed: {e}") from e
@@ -79,7 +80,8 @@ def verify_package(package_path: Path, config: WorkenvConfig | None = None) -> d
     try:
         result = flavor_verify(package_path)
         logger.info("Package verification successful")
-        return result
+        verified: dict[str, Any] = result
+        return verified
     except Exception as e:
         logger.error(f"Package verification failed: {e}")
         raise RuntimeError(f"Package verification failed: {e}") from e
@@ -89,7 +91,7 @@ def generate_keys(output_dir: Path, config: WorkenvConfig | None = None) -> tupl
     """Generate signing key pair."""
     _check_flavor_installed()
 
-    from flavor.packaging import generate_key_pair
+    from flavor.packaging import generate_key_pair  # type: ignore[import-not-found]
 
     output_dir.mkdir(parents=True, exist_ok=True)
 

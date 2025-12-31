@@ -133,7 +133,8 @@ class TemplateHandler:
         logger.debug("Fetching latest commit SHA from GitHub API")
         response = asyncio.run(get(f"{self.GITHUB_API}/commits/main"))
         data = response.json()
-        return data["sha"][:8]
+        sha: str = data["sha"]
+        return sha[:8]
 
     def _fallback_version(self) -> str:
         """Fallback version identifier using timestamp."""

@@ -54,16 +54,19 @@ class FileConfigSource(ConfigSource):
     def get_tool_version(self, tool_name: str) -> str | None:
         """Get version for a specific tool."""
         tools = self._data.get(self.section, {}).get("tools", {})
-        return tools.get(tool_name)
+        result: str | None = tools.get(tool_name)
+        return result
 
     def get_all_tools(self) -> dict[str, str]:
         """Get all tool versions."""
-        return self._data.get(self.section, {}).get("tools", {})
+        tools: dict[str, str] = self._data.get(self.section, {}).get("tools", {})
+        return tools
 
     def get_profile(self, profile_name: str) -> dict[str, str]:
         """Get a configuration profile."""
         profiles = self._data.get(self.section, {}).get("profiles", {})
-        return profiles.get(profile_name, {})
+        profile: dict[str, str] = profiles.get(profile_name, {})
+        return profile
 
     def get_setting(self, key: str, default: Any = None) -> Any:
         """Get a configuration setting."""

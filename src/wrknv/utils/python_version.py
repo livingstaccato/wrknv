@@ -43,7 +43,8 @@ def get_venv_python_version(venv_dir: Path) -> dict[str, Any] | None:
         result = run(cmd, check=False)
 
         if result.returncode == 0:
-            return json.loads(result.stdout)
+            result_dict: dict[str, Any] = json.loads(result.stdout)
+            return result_dict
     except Exception:
         pass
 
@@ -67,7 +68,8 @@ def get_project_python_requirement() -> str | None:
 
         # Check for requires-python in [project] section
         if "project" in data and "requires-python" in data["project"]:
-            return data["project"]["requires-python"]
+            requires_python: str = data["project"]["requires-python"]
+            return requires_python
     except Exception:
         pass
 
