@@ -252,6 +252,23 @@ class ProjectDetector:
             except (json.JSONDecodeError, KeyError):
                 logger.debug(f"Could not parse {package_json}")
 
+    def detect_project_types(self, path: Path, max_depth: int = 5) -> list[str]:
+        """
+        Detect project types by scanning directory and suggesting templates.
+
+        This is a convenience method that combines scan_directory and suggest_templates.
+
+        Args:
+            path: Directory path to scan
+            max_depth: Maximum depth to recurse
+
+        Returns:
+            List of suggested template names, ordered by priority
+        """
+        self.reset()
+        self.scan_directory(path, max_depth)
+        return self.suggest_templates()
+
     def suggest_templates(self) -> list[str]:
         """
         Suggest gitignore templates based on detection.

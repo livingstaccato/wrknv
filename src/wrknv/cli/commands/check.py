@@ -12,11 +12,11 @@ from __future__ import annotations
 import ast
 import json
 from pathlib import Path
-import subprocess
 import sys
 
 from provide.foundation.cli import echo_error, echo_info, echo_success, echo_warning
 from provide.foundation.hub import register_command
+from provide.foundation.process import run as process_run
 
 try:
     import tomllib  # Python 3.11+
@@ -80,19 +80,20 @@ FOOTER_EMOJIS = [
 def _detect_repo_name() -> str:
     """Auto-detect repository name from git remote or directory name."""
     try:
-        result = subprocess.run(
+        result = process_run(
             ["git", "remote", "get-url", "origin"],
             capture_output=True,
             text=True,
-            check=True,
-            timeout=5,
+            check=False,
+            timeout=5.0,
         )
-        remote_url = result.stdout.strip()
-        repo_name = remote_url.rstrip("/").split("/")[-1]
-        repo_name = repo_name.removesuffix(".git")
-        if repo_name:
-            return repo_name
-    except (subprocess.CalledProcessError, subprocess.TimeoutExpired, FileNotFoundError):
+        if result.returncode == 0:
+            remote_url = result.stdout.strip()
+            repo_name = remote_url.rstrip("/").split("/")[-1]
+            repo_name = repo_name.removesuffix(".git")
+            if repo_name:
+                return repo_name
+    except Exception:
         pass
     return Path.cwd().name
 

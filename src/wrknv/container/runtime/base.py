@@ -21,6 +21,7 @@ class ContainerRuntime(ABC):
     """Abstract base class for container runtimes (Docker, Podman, etc.)."""
 
     runtime_name: str
+    runtime_command: str
 
     @abstractmethod
     def run_container(

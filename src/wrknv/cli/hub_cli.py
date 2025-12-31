@@ -79,7 +79,7 @@ def load_commands() -> None:
     logger.debug("Loaded wrknv command modules")
 
 
-def create_cli() -> click.Command:
+def create_cli() -> click.Group:
     """Create the main CLI application using the hub."""
     # Get or create hub
     hub = get_hub()

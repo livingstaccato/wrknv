@@ -228,7 +228,7 @@ def gitignore_show(template: str) -> None:
         templates_path = gitignore_config.get("templates_path")
         manager = GitignoreManager(cache_dir=Path(templates_path) if templates_path else None)
 
-        content = manager.get_template(template)
+        content = manager.template_handler.get_template(template)
 
         if content:
             echo_info(f"# Template: {template}")
@@ -261,7 +261,7 @@ def gitignore_update() -> None:
 
         echo_info("Updating gitignore templates from GitHub...")
 
-        updated = manager.update_cache()
+        updated = manager.update_templates()
         if updated:
             echo_success("✅ Templates updated successfully")
         else:

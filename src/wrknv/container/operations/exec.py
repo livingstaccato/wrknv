@@ -9,7 +9,7 @@ Execute commands inside running containers."""
 
 from __future__ import annotations
 
-import subprocess
+import subprocess  # nosec B404 - Required for interactive TTY support
 from typing import Any
 
 from attrs import define
@@ -86,7 +86,7 @@ class ContainerExec:
                 )
 
                 # Use subprocess.run for interactive TTY support (shell=False for security)
-                result = subprocess.run(cmd_list, check=False)
+                result = subprocess.run(cmd_list, check=False)  # nosec B603 - cmd_list is controlled
                 return result.returncode == 0
 
             else:
