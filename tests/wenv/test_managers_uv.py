@@ -36,23 +36,18 @@ class TestUvManagerProperties(FoundationTestCase):
 class TestGetAvailableVersions(FoundationTestCase):
     """Test get_available_versions method."""
 
-    @patch("wrknv.wenv.managers.uv.urlopen")
-    def test_get_available_versions_success(self, mock_urlopen: Mock) -> None:
+    def test_get_available_versions_success(self) -> None:
         """Test fetching versions from GitHub API."""
         # Mock API response
-        mock_response = MagicMock()
-        mock_response.read.return_value = json.dumps(
-            [
-                {"tag_name": "0.4.15", "prerelease": False},
-                {"tag_name": "0.4.14", "prerelease": False},
-                {"tag_name": "0.4.13-beta", "prerelease": True},
-            ]
-        ).encode()
-        mock_response.__enter__.return_value = mock_response
-        mock_urlopen.return_value = mock_response
+        mock_data = [
+            {"tag_name": "0.4.15", "prerelease": False},
+            {"tag_name": "0.4.14", "prerelease": False},
+            {"tag_name": "0.4.13-beta", "prerelease": True},
+        ]
 
         manager = UvManager()
-        versions = manager.get_available_versions()
+        with patch.object(manager, "fetch_json_secure", return_value=mock_data):
+            versions = manager.get_available_versions()
 
         assert isinstance(versions, list)
         assert "0.4.15" in versions
@@ -60,31 +55,28 @@ class TestGetAvailableVersions(FoundationTestCase):
         # Prerelease should be filtered out by default
         assert "0.4.13-beta" not in versions
 
-    @patch("wrknv.wenv.managers.uv.urlopen")
-    def test_get_available_versions_includes_prereleases(self, mock_urlopen: Mock) -> None:
+    def test_get_available_versions_includes_prereleases(self) -> None:
         """Test fetching versions including prereleases when configured."""
-        mock_response = MagicMock()
-        mock_response.read.return_value = json.dumps(
-            [
-                {"tag_name": "0.4.15", "prerelease": False},
-                {"tag_name": "0.4.13-beta", "prerelease": True},
-            ]
-        ).encode()
-        mock_response.__enter__.return_value = mock_response
-        mock_urlopen.return_value = mock_response
+        mock_data = [
+            {"tag_name": "0.4.15", "prerelease": False},
+            {"tag_name": "0.4.13-beta", "prerelease": True},
+        ]
 
         manager = UvManager()
-        # Mock the config setting check
-        with patch.object(manager.config, "get_setting", return_value=True):
+        # Mock the config setting check and fetch
+        with (
+            patch.object(manager, "fetch_json_secure", return_value=mock_data),
+            patch.object(manager.config, "get_setting", return_value=True),
+        ):
             versions = manager.get_available_versions()
             assert "0.4.13-beta" in versions
 
-    @patch("wrknv.wenv.managers.uv.urlopen", side_effect=Exception("Network error"))
-    def test_get_available_versions_network_failure(self, mock_urlopen: Mock) -> None:
+    def test_get_available_versions_network_failure(self) -> None:
         """Test handling network failures."""
         manager = UvManager()
-        with pytest.raises(ToolManagerError, match="Failed to fetch UV versions"):
-            manager.get_available_versions()
+        with patch.object(manager, "fetch_json_secure", side_effect=Exception("Network error")):
+            with pytest.raises(ToolManagerError, match="Failed to fetch UV versions"):
+                manager.get_available_versions()
 
 
 class TestGetDownloadUrl(FoundationTestCase):
