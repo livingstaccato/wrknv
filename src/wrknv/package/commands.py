@@ -21,7 +21,7 @@ from .manager import PackageManager
 def _check_flavor_installed() -> None:
     """Check if flavorpack is installed."""
     try:
-        import flavor  # noqa: F401  # type: ignore[import-not-found]
+        import flavor  # type: ignore  # noqa: F401
     except ImportError as e:
         raise ImportError("flavorpack not installed. Install it with: uv pip install flavorpack") from e
 
@@ -91,7 +91,7 @@ def generate_keys(output_dir: Path, config: WorkenvConfig | None = None) -> tupl
     """Generate signing key pair."""
     _check_flavor_installed()
 
-    from flavor.packaging import generate_key_pair  # type: ignore[import-not-found]
+    from flavor.packaging import generate_key_pair  # type: ignore
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
