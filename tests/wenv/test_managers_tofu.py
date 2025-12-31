@@ -40,23 +40,18 @@ class TestTofuManagerProperties(FoundationTestCase):
 class TestGetAvailableVersions(FoundationTestCase):
     """Test get_available_versions method."""
 
-    @patch("wrknv.wenv.managers.tofu.urlopen")
-    def test_get_available_versions_success(self, mock_urlopen: Mock) -> None:
+    def test_get_available_versions_success(self) -> None:
         """Test fetching versions from GitHub API."""
         # Mock GitHub API response
-        mock_response = MagicMock()
-        mock_response.read.return_value = json.dumps(
-            [
-                {"tag_name": "v1.6.0", "prerelease": False},
-                {"tag_name": "v1.5.7", "prerelease": False},
-                {"tag_name": "v1.5.0", "prerelease": False},
-            ]
-        ).encode()
-        mock_response.__enter__.return_value = mock_response
-        mock_urlopen.return_value = mock_response
+        mock_data = [
+            {"tag_name": "v1.6.0", "prerelease": False},
+            {"tag_name": "v1.5.7", "prerelease": False},
+            {"tag_name": "v1.5.0", "prerelease": False},
+        ]
 
         manager = TofuManager()
-        versions = manager.get_available_versions()
+        with patch.object(manager, "fetch_json_secure", return_value=mock_data):
+            versions = manager.get_available_versions()
 
         assert isinstance(versions, list)
         # Versions should have 'v' prefix stripped
@@ -66,73 +61,60 @@ class TestGetAvailableVersions(FoundationTestCase):
         # Should NOT have 'v' prefix
         assert "v1.6.0" not in versions
 
-    @patch("wrknv.wenv.managers.tofu.urlopen")
-    def test_get_available_versions_includes_prereleases(self, mock_urlopen: Mock) -> None:
+    def test_get_available_versions_includes_prereleases(self) -> None:
         """Test fetching versions including prereleases when configured."""
-        mock_response = MagicMock()
-        mock_response.read.return_value = json.dumps(
-            [
-                {"tag_name": "v1.6.0", "prerelease": False},
-                {"tag_name": "v1.6.0-rc1", "prerelease": True},
-            ]
-        ).encode()
-        mock_response.__enter__.return_value = mock_response
-        mock_urlopen.return_value = mock_response
+        mock_data = [
+            {"tag_name": "v1.6.0", "prerelease": False},
+            {"tag_name": "v1.6.0-rc1", "prerelease": True},
+        ]
 
         manager = TofuManager()
-        # Mock the config setting check
-        with patch.object(manager.config, "get_setting", return_value=True):
+        # Mock the config setting check and fetch
+        with (
+            patch.object(manager, "fetch_json_secure", return_value=mock_data),
+            patch.object(manager.config, "get_setting", return_value=True),
+        ):
             versions = manager.get_available_versions()
             assert "1.6.0-rc1" in versions
 
-    @patch("wrknv.wenv.managers.tofu.urlopen")
-    def test_get_available_versions_filters_prereleases(self, mock_urlopen: Mock) -> None:
+    def test_get_available_versions_filters_prereleases(self) -> None:
         """Test that prereleases are filtered by default."""
-        mock_response = MagicMock()
-        mock_response.read.return_value = json.dumps(
-            [
-                {"tag_name": "v1.6.0", "prerelease": False},
-                {"tag_name": "v1.6.0-rc1", "prerelease": True},
-            ]
-        ).encode()
-        mock_response.__enter__.return_value = mock_response
-        mock_urlopen.return_value = mock_response
+        mock_data = [
+            {"tag_name": "v1.6.0", "prerelease": False},
+            {"tag_name": "v1.6.0-rc1", "prerelease": True},
+        ]
 
         manager = TofuManager()
-        versions = manager.get_available_versions()
+        with patch.object(manager, "fetch_json_secure", return_value=mock_data):
+            versions = manager.get_available_versions()
 
         # Prerelease should be filtered out by default
         assert "1.6.0" in versions
         assert "1.6.0-rc1" not in versions
 
-    @patch("wrknv.wenv.managers.tofu.urlopen")
-    def test_get_available_versions_sorted(self, mock_urlopen: Mock) -> None:
+    def test_get_available_versions_sorted(self) -> None:
         """Test that versions are sorted newest first."""
-        mock_response = MagicMock()
-        mock_response.read.return_value = json.dumps(
-            [
-                {"tag_name": "v1.5.0", "prerelease": False},
-                {"tag_name": "v1.6.0", "prerelease": False},
-                {"tag_name": "v1.5.7", "prerelease": False},
-            ]
-        ).encode()
-        mock_response.__enter__.return_value = mock_response
-        mock_urlopen.return_value = mock_response
+        mock_data = [
+            {"tag_name": "v1.5.0", "prerelease": False},
+            {"tag_name": "v1.6.0", "prerelease": False},
+            {"tag_name": "v1.5.7", "prerelease": False},
+        ]
 
         manager = TofuManager()
-        versions = manager.get_available_versions()
+        with patch.object(manager, "fetch_json_secure", return_value=mock_data):
+            versions = manager.get_available_versions()
 
         # Should be sorted descending (newest first)
         assert versions[0] == "1.6.0"
         assert versions[1] == "1.5.7"
         assert versions[2] == "1.5.0"
 
-    @patch("wrknv.wenv.managers.tofu.urlopen", side_effect=Exception("Network error"))
-    def test_get_available_versions_network_failure(self, mock_urlopen: Mock) -> None:
+    def test_get_available_versions_network_failure(self) -> None:
         """Test handling network failures."""
         manager = TofuManager()
-        with pytest.raises(ToolManagerError, match="Failed to fetch OpenTofu versions"):
-            manager.get_available_versions()
+        with patch.object(manager, "fetch_json_secure", side_effect=Exception("Network error")):
+            with pytest.raises(ToolManagerError, match="Failed to fetch OpenTofu versions"):
+                manager.get_available_versions()
 
 
 class TestGetDownloadUrl(FoundationTestCase):
