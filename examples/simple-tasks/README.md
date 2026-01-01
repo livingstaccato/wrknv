@@ -81,4 +81,4 @@ we clean
 
 - [Task System Documentation](../../docs/features/task-system.md)
 - [Nested Tasks Example](../nested-tasks/)
-- [wrknv.toml Reference](../../docs/reference/wrknv-toml.md)
+- [Configuration Reference](../../docs/reference/configuration.md)

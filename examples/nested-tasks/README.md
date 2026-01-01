@@ -220,4 +220,4 @@ we deploy staging        # Uses ENV=staging, REGION=us-west-2
 
 - [Task System Documentation](../../docs/features/task-system.md)
 - [Simple Tasks Example](../simple-tasks/) - Flat task organization
-- [wrknv.toml Reference](../../docs/reference/wrknv-toml.md)
+- [Configuration Reference](../../docs/reference/configuration.md)
