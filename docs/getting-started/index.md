@@ -193,13 +193,13 @@ base_image = "python:3.11-slim"
 ### From PyPI (Recommended)
 
 ```console
-$ pip install wrknv
+$ uv tool install wrknv
 ```
 
 ### Using UV
 
 ```console
-$ uv pip install wrknv
+$ uv uv tool install wrknv
 ```
 
 ### From Source

@@ -142,7 +142,7 @@ install_as_editable = true
 2. Read each `pyproject.toml`
 3. Build dependency graph
 4. Install in topological order
-5. Use editable mode (`pip install -e`)
+5. Use editable mode (`uv pip install -e`)
 
 **Benefits:**
 - ✅ No manual path management
@@ -357,7 +357,7 @@ workspace/
 # .github/workflows/test.yml
 - name: Setup Environment
   run: |
-    pip install wrknv
+    uv tool install wrknv
     wrknv generate --profile ci
     source env.sh
     pytest

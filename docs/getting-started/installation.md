@@ -33,7 +33,7 @@ pipx install wrknv
 
 **Using pip:**
 ```bash
-pip install wrknv
+uv tool install wrknv
 ```
 
 ### As a Library Dependency
@@ -96,7 +96,7 @@ For Docker-based development environments:
 
 ```bash
 # Install with container support
-pip install "wrknv[container]"
+uv add wrknv[container]
 ```
 
 **Container Features:**
@@ -356,7 +356,7 @@ ls dist/
 
 ```bash
 # Install with container support
-pip install "wrknv[container]"
+uv add wrknv[container]
 
 # Configure container in workenv.toml
 cat >> workenv.toml << 'EOF'

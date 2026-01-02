@@ -24,7 +24,7 @@ WrkNv provides:
 <div class="termy">
 
 ```console
-$ pip install wrknv
+$ uv tool install wrknv
 // Installing wrknv...
 Successfully installed wrknv
 
@@ -108,7 +108,7 @@ env.setup()
 
 # Work with containers
 container = Container("python:3.11")
-container.run("pip install -r requirements.txt")
+container.run("uv pip install -r requirements.txt")
 ```
 
 ## API Reference

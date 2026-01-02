@@ -12,9 +12,9 @@ Get your first wrknv environment running in 5 minutes.
 Install wrknv from PyPI:
 
 ```console
-$ pip install wrknv
+$ uv tool install wrknv
 # or using uv
-$ uv pip install wrknv
+$ uv uv tool install wrknv
 ```
 
 Verify installation:
