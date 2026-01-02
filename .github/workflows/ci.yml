@@ -103,9 +103,9 @@ jobs:
 
       - name: Test config initialization
         run: |
-          cd /tmp
+          mkdir -p /tmp/wrknv-test && cd /tmp/wrknv-test
           rm -f wrknv.toml
-          echo -e "test-project\n1.0.0\nINFO\nn\nn\nn\nn\n" | uv run --directory $GITHUB_WORKSPACE wrknv config init
+          echo -e "test-project\n1.0.0\nINFO\nn\nn\nn\nn\n" | uv run --project $GITHUB_WORKSPACE wrknv config init
           cat wrknv.toml
 
       - name: Test profile operations
