@@ -31,8 +31,21 @@
 - [Examples](https://github.com/provide-io/wrknv/tree/main/examples)
 
 ## Development
-- See [CLAUDE.md](https://github.com/provide-io/wrknv/blob/main/CLAUDE.md) for local development notes.
-- Run `uv sync --extra dev` to set up the dev environment.
+
+### Quick Start
+
+```bash
+# Set up environment
+uv sync
+
+# Run common tasks
+we test           # Run tests
+we lint           # Check code
+we format         # Format code
+we tasks          # See all available commands
+```
+
+See [CLAUDE.md](https://github.com/provide-io/wrknv/blob/main/CLAUDE.md) for detailed development instructions and architecture information.
 
 ## Contributing
 See [CONTRIBUTING.md](https://github.com/provide-io/wrknv/blob/main/CONTRIBUTING.md) for contribution guidelines.
