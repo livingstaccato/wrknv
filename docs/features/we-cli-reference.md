@@ -477,8 +477,8 @@ we ci                        # Runs: quality, test, build
 ```bash
 we test unit                 # Specific test suite
 we test unit fast            # Quick unit tests
-we docs build                # Build documentation
-we docs serve                # Serve docs locally
+we run docs.build            # Build documentation
+we run docs.serve            # Serve docs locally
 ```
 
 ## Troubleshooting

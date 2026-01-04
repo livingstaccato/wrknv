@@ -58,7 +58,7 @@ When a namespace has `_default`, you can run it directly:
 
 ```bash
 we test                  # Runs test._default (pytest tests/)
-we docs                  # Runs docs._default (mkdocs serve)
+we run docs              # Runs docs._default (mkdocs serve)
 we build                 # Runs build._default (python -m build)
 ```
 
@@ -70,7 +70,7 @@ Use space-separated syntax:
 # 2-level tasks
 we test unit             # Run unit tests
 we test integration      # Run integration tests
-we docs build            # Build documentation
+we run docs.build         # Build documentation
 
 # 3-level tasks
 we test unit fast        # Fast unit tests
