@@ -134,7 +134,13 @@ $ wrknv generate
 $ source env.sh  # or .\env.ps1 on Windows
 ```
 
-Now Terraform and Go will be installed automatically!
+Install the configured tools:
+
+```console
+$ wrknv tools sync
+```
+
+wrknv will install Terraform and Go based on the configured versions.
 
 ### Work with Sibling Packages
 
