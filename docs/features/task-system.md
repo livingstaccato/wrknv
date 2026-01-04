@@ -228,6 +228,16 @@ timeout = 1800.0  # 30 minutes
 env = { ENV = "staging", REGION = "us-west-2" }
 ```
 
+### Task Dependencies
+
+`depends_on` is defined in the schema but not executed yet. Use composite tasks instead:
+
+```toml
+[tasks.deploy]
+run = ["test", "build", "push"]
+description = "Test, build, and deploy"
+```
+
 ## Best Practices
 
 ### Naming Conventions

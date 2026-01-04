@@ -365,6 +365,7 @@ description = "A friendly greeting from your work environment"
 
 ## Exploratory Enhancements (Not in MVP)
 
+- Dependency execution (`depends_on` field)
 - Parallel execution
 - Task result caching
 - Watch mode
