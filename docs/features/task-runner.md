@@ -54,7 +54,6 @@ stream_output = true  # Optional: stream output in real-time
 [tasks.test-verbose]
 run = "pytest tests/ -vvv --tb=long"
 description = "Run tests with verbose output"
-depends_on = ["format", "lint"]
 process_title_format = "full"  # Optional: "full", "leaf", or "abbreviated"
 ```
 
@@ -235,7 +234,6 @@ class TaskConfig:
     run: str | list[str]  # Command or list of task names
     description: str | None = None
     env: dict[str, str] = field(factory=dict)
-    depends_on: list[str] = field(factory=list)
     working_dir: Path | None = None
     namespace: str | None = None  # Parent namespace (e.g., "test" for test.unit)
 
@@ -367,7 +365,6 @@ description = "A friendly greeting from your work environment"
 
 ## Exploratory Enhancements (Not in MVP)
 
-- Dependency execution (`depends_on` field)
 - Parallel execution
 - Task result caching
 - Watch mode

@@ -226,17 +226,6 @@ description = "Deploy to staging"
 working_dir = "deployment"
 timeout = 1800.0  # 30 minutes
 env = { ENV = "staging", REGION = "us-west-2" }
-depends_on = ["test", "build"]
-```
-
-### Task Dependencies
-
-While `depends_on` is defined in the schema, automatic dependency resolution is not yet implemented. Use composite tasks instead:
-
-```toml
-[tasks.deploy]
-run = ["test", "build", "push"]
-description = "Test, build, and deploy"
 ```
 
 ## Best Practices

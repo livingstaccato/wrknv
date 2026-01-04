@@ -153,7 +153,6 @@ working_dir = "tests"
 - `timeout` (float, optional) - Timeout in seconds (default: 300)
 - `env` (object, optional) - Task-specific environment variables
 - `working_dir` (string, optional) - Working directory
-- `depends_on` (array, optional) - Task dependencies (not yet implemented)
 - `stream_output` (bool, optional) - Stream output in real-time (default: false)
 - `process_title_format` (string, optional) - Process title format: "full", "leaf", "abbreviated" (default: "full")
 - `command_prefix` (string, optional) - Override command prefix (e.g., "uv run", "docker run myimage", or "" for none)
@@ -430,8 +429,7 @@ description = "Description"        # Optional: string
 timeout = 300.0                    # Optional: float (seconds)
 working_dir = "path"               # Optional: string (path)
 env = { KEY = "value" }            # Optional: object
-depends_on = ["task1", "task2"]    # Optional: array (not implemented)
-stream_output = false              # Optional: bool (not implemented)
+stream_output = false              # Optional: bool
 ```
 
 ### Tool Schema
