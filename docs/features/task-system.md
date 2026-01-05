@@ -399,5 +399,5 @@ we run test --env DEBUG=1
 ## See Also
 
 - [CLI Reference](we-cli-reference.md) - Complete command documentation
-- [wrknv.toml Reference](../reference/wrknv-toml/) - Configuration schema
+- [Configuration Reference](../reference/configuration.md) - Configuration schema
 - [Examples](../../examples/) - Sample projects
