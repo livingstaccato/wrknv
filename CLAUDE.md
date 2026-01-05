@@ -39,7 +39,7 @@ uv build
 
 # Install in development mode (uses workenv/ not .venv/)
 uv sync
-uv pip install -e .
+uv add --editable .
 ```
 
 ## Architecture

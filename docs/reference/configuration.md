@@ -231,7 +231,7 @@ command_prefix = ""  # Empty string = no prefix
 
 **Detection Priority**:
 1. `WRKNV_TASK_RUNNER` environment variable (highest)
-2. Editable install detection (preserves `uv pip install -e .`)
+2. Editable install detection (preserves `uv add --editable .`)
 3. UV project detection (`uv.lock` or `[tool.uv]`)
 4. Virtual environment detection (`.venv/`, `venv/`, `workenv/`)
 5. System Python (lowest)
