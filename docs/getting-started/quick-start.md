@@ -5,7 +5,7 @@ Get your first wrknv environment running in 5 minutes.
 ## Prerequisites
 
 - Python 3.11 or higher
-- pip or uv package manager
+- uv package manager
 
 ## Installation
 
