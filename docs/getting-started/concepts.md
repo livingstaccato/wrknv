@@ -142,7 +142,7 @@ install_as_editable = true
 2. Read each `pyproject.toml`
 3. Build dependency graph
 4. Install in topological order
-5. Use editable mode (`uv add --editable`)
+5. Use editable mode (`uv pip install -e`)
 
 **Benefits:**
 - ✅ No manual path management

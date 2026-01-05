@@ -156,7 +156,7 @@ wrknv automatically detects the optimal execution strategy for tasks:
 ### Detection Priority
 
 1. **Environment Variable Override**: `WRKNV_TASK_RUNNER` env var (highest priority)
-2. **Editable Install**: If package is installed with `uv add --editable .`, use direct execution with PATH modification
+2. **Editable Install**: If package is installed with `uv pip install -e .`, use direct execution with PATH modification
 3. **UV Project**: If `uv.lock` or `[tool.uv]` in pyproject.toml exists, use `uv run`
 4. **Virtual Environment**: If `.venv/`, `venv/`, or `workenv/` exists, use direct execution with PATH
 5. **System Python**: Use system Python (lowest priority)

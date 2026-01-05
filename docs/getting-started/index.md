@@ -208,7 +208,7 @@ $ uv tool install wrknv
 $ git clone https://github.com/provide-io/wrknv.git
 $ cd wrknv
 $ uv sync
-$ uv add --editable .
+$ uv pip install -e .
 ```
 
 ## First Commands
