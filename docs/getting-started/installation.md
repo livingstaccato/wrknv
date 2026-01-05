@@ -482,6 +482,6 @@ If you encounter issues:
 
 ### Quick Start
 
-1. **[Quick Start Guide](quick-start/)** - Generate your first environment in 5 minutes
+1. **[Quick Start Guide](quick-start.md)** - Generate your first environment in 5 minutes
 
-Ready to manage your development environment? Start with the [Quick Start Guide](quick-start/)!
+Ready to manage your development environment? Start with the [Quick Start Guide](quick-start.md)!

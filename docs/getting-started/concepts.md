@@ -381,9 +381,9 @@ $ for dir in */; do (cd "$dir" && wrknv generate); done
 Now that you understand wrknv's concepts:
 
 - **[API Reference](../reference/)** - Python API documentation
-- **[Quick Start Guide](quick-start/)** - Get wrknv running
-- **[Installation Guide](installation/)** - Complete setup guide
+- **[Quick Start Guide](quick-start.md)** - Get wrknv running
+- **[Installation Guide](installation.md)** - Complete setup guide
 
 Or return to:
 
-- **[Getting Started Index](index/)**
+- **[Getting Started Index](index.md)**

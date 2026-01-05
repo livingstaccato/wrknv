@@ -38,7 +38,7 @@ Fully configured development environment!
 
     Get your first environment running in 5 minutes.
 
-    [:octicons-arrow-right-24: Quick Start Guide](quick-start/)
+    [:octicons-arrow-right-24: Quick Start Guide](quick-start.md)
 
 -   :material-cog:{ .lg .middle } **Complete Installation**
 
@@ -46,7 +46,7 @@ Fully configured development environment!
 
     Detailed installation with all options and configurations.
 
-    [:octicons-arrow-right-24: Installation Guide](installation/)
+    [:octicons-arrow-right-24: Installation Guide](installation.md)
 
 -   :material-lightbulb:{ .lg .middle } **Core Concepts**
 
@@ -54,7 +54,7 @@ Fully configured development environment!
 
     Understand wrknv's architecture and design.
 
-    [:octicons-arrow-right-24: Learn Concepts](concepts/)
+    [:octicons-arrow-right-24: Learn Concepts](concepts.md)
 
 -   :material-school:{ .lg .middle } **First Project**
 
@@ -236,9 +236,9 @@ $ wrknv config show
 
 ### 1. Basics (30 minutes)
 
-- [Quick Start Guide](quick-start/) - 5-minute tutorial
-- [Core Concepts](concepts/) - Understanding wrknv
-- [Installation Guide](installation/) - Complete setup
+- [Quick Start Guide](quick-start.md) - 5-minute tutorial
+- [Core Concepts](concepts.md) - Understanding wrknv
+- [Installation Guide](installation.md) - Complete setup
 
 ## System Requirements
 
@@ -256,6 +256,6 @@ $ wrknv config show
 
 Ready to get started?
 
-1. **[Quick Start Guide](quick-start/)** - Get running in 5 minutes
-2. **[Installation Guide](installation/)** - Detailed setup
-3. **[Core Concepts](concepts/)** - Understand how wrknv works
+1. **[Quick Start Guide](quick-start.md)** - Get running in 5 minutes
+2. **[Installation Guide](installation.md)** - Detailed setup
+3. **[Core Concepts](concepts.md)** - Understand how wrknv works

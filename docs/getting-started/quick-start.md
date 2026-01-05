@@ -280,8 +280,8 @@ PS> .\env.ps1
 
 ## Learn More
 
-- **[Complete Installation Guide](installation/)** - Detailed installation and configuration
-- **[Core Concepts](concepts/)** - Understanding wrknv architecture
+- **[Complete Installation Guide](installation.md)** - Detailed installation and configuration
+- **[Core Concepts](concepts.md)** - Understanding wrknv architecture
 - **[API Reference](../reference/)** - Python API documentation
 
 ## Summary
@@ -294,4 +294,4 @@ You've now:
 ✓ Learned basic wrknv commands
 ✓ Understood what wrknv does
 
-Ready to dive deeper? Check out the [Complete Installation Guide](installation/) or explore [Core Concepts](concepts/).
+Ready to dive deeper? Check out the [Complete Installation Guide](installation.md) or explore [Core Concepts](concepts.md).
