@@ -90,6 +90,9 @@ class WorkenvConfig(RuntimeConfig):
     # Gitignore configuration
     gitignore: dict[str, Any] = field(factory=dict)
 
+    # Security scanning configuration
+    security: dict[str, Any] = field(factory=dict)
+
     # Internal state
     config_path: Path | None = field(init=False, repr=False, default=None)
     _manager: ConfigManager | None = field(init=False, repr=False, default=None)
