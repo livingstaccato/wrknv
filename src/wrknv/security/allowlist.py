@@ -145,7 +145,7 @@ class SecurityAllowlistManager:
 # https://docs.gitguardian.com/ggshield-docs/configuration
 
 """
-        return header + yaml.dump(config_dict, default_flow_style=False, sort_keys=False)
+        return header + str(yaml.dump(config_dict, default_flow_style=False, sort_keys=False))
 
     def write_all(self, dry_run: bool = False) -> dict[str, bool]:
         """Write all security scanner configuration files.
